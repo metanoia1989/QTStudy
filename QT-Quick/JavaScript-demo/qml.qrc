@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>RotateRect.qml</file>
+        <file>MainForm.qml</file>
+        <file>RotateRectAnother.qml</file>
+        <file>js/main.js</file>
+    </qresource>
+</RCC>

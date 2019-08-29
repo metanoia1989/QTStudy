@@ -38,4 +38,28 @@ Rectangle {
        anchors.leftMargin: 40	// 左锚边距 与绿矩形的间距
     }
 
+    /* 对比测试Anchor的性质 */
+    RedRectangle {
+       id: changingRect1
+       anchors.left: parent.left // 矩形 changingRect1 初始与窗体左锚线锚定
+       anchors.top: blueRect.bottom
+       anchors.leftMargin: 25
+       anchors.topMargin: 25
+    }
+
+    RedRectangle {
+       id: changingRect2
+       anchors.left: parent.left // 矩形 changingRect2 与 changingRect2 左对齐
+       anchors.top: changingRect1.bottom
+       anchors.leftMargin: 25
+       anchors.topMargin: 20
+    }
+
+    /* 复用按钮 */
+    Button {
+        width: 95; height: 35
+        anchors.right: redRect.right
+        anchors.top: changingRect2.bottom
+        anchors.topMargin: 10
+    }
 }
