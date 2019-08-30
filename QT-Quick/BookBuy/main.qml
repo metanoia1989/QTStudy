@@ -14,6 +14,13 @@ ApplicationWindow {
         currentIndex: tabBar.currentIndex
 
         Page {
+            Label {
+                text: qsTr("Second Page")
+                anchors.centerIn: parent
+            }
+        }
+
+        Page {
             ListView {
                 id: listView
                 anchors.fill: parent
@@ -92,6 +99,7 @@ ApplicationWindow {
                     }
                 }
             }
+
             RowLayout {
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -147,12 +155,6 @@ ApplicationWindow {
             }
         }
 
-        Page {
-            Label {
-                text: qsTr("Second Page")
-                anchors.centerIn: parent
-            }
-        }
     }
 
     footer: TabBar {
