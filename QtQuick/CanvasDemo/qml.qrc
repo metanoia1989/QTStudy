@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>CanvasDemo.qml</file>
+        <file>RectDemo.qml</file>
+        <file>GradientDemo.qml</file>
+        <file>ShadowDemo.qml</file>
+    </qresource>
+</RCC>
