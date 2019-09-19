@@ -20,6 +20,7 @@ void SvgWindow::mousePressEvent(QMouseEvent *event)
     mousePressPos = event->pos();
     scrollBarValuesOnMousePress.rx() = horizontalScrollBar()->value();
     scrollBarValuesOnMousePress.ry() = verticalScrollBar()->value();
+    event->accept();
 }
 
 // 通过滚动条的位置设置实现图片拖拽的效果

@@ -1,16 +1,14 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-09-18T14:20:54
+# Project created by QtCreator 2019-09-18T16:52:32
 #
 #-------------------------------------------------
 
 QT       += core gui
-QT       += svg
-
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = SVGTest
+TARGET = ButterFly
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -27,15 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        butterfly.cpp \
         main.cpp \
-        mainwindow.cpp \
-        svgwidget.cpp \
-        svgwindow.cpp
+        mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h \
-        svgwidget.h \
-        svgwindow.h
+        butterfly.h \
+        mainwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

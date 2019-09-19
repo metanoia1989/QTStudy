@@ -1,16 +1,14 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-09-18T14:20:54
+# Project created by QtCreator 2019-09-19T10:26:14
 #
 #-------------------------------------------------
 
 QT       += core gui
-QT       += svg
-
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = SVGTest
+TARGET = GraphicsItem
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -28,14 +26,10 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-        svgwidget.cpp \
-        svgwindow.cpp
+        mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h \
-        svgwidget.h \
-        svgwindow.h
+        mainwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
