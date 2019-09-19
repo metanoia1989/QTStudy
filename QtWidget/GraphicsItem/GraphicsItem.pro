@@ -25,11 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        flashitem.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        staritem.cpp
 
 HEADERS += \
-        mainwindow.h
+        flashitem.h \
+        mainwindow.h \
+        staritem.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

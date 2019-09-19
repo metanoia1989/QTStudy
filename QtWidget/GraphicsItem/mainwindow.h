@@ -27,6 +27,8 @@ public slots:
     void slotAddTextItem();	// 在场景中加入一个文字图元
     void slotAddRectItem();	// 在场景中加入一个长方形图元
     void slotAddAlphaItem();	// 在场景中加入一个透明蝴蝶图片
+    void slotAddFlashItem();
+    void slotAddAnimationItem();
 
 private:
     QGraphicsScene *scene;
@@ -38,6 +40,8 @@ private:
     QAction *addTextItemAct;
     QAction *addRectItemAct;
     QAction *addAlphaItemAct;
+    QAction *addFlashItemAct;
+    QAction *addAnimItemAct;
 };
 
 #endif // MAINWINDOW_H

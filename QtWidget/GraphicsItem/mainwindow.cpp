@@ -1,4 +1,8 @@
 #include "mainwindow.h"
+#include "flashitem.h"
+#include "staritem.h"
+#include <QGraphicsItemAnimation>
+#include <QTimeLine>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,6 +37,8 @@ void MainWindow::createActions()
     addTextItemAct = new QAction(tr("加入 文字"), this);
     addRectItemAct = new QAction(tr("加入 长方形"), this);
     addAlphaItemAct = new QAction(tr("加入 透明图片"), this);
+    addFlashItemAct = new QAction(tr("加入 闪烁圆"), this);
+    addAnimItemAct = new QAction(tr("加入 星星"), this);
     connect(newAct, SIGNAL(triggered()), this, SLOT(slotNew()));
     connect(clearAct, SIGNAL(triggered()), this, SLOT(slotClear()));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
@@ -41,6 +47,8 @@ void MainWindow::createActions()
     connect(addTextItemAct, SIGNAL(triggered()), this, SLOT(slotAddTextItem()));
     connect(addRectItemAct, SIGNAL(triggered()), this, SLOT(slotAddRectItem()));
     connect(addAlphaItemAct, SIGNAL(triggered()), this, SLOT(slotAddAlphaItem()));
+    connect(addFlashItemAct, SIGNAL(triggered()), this, SLOT(slotAddFlashItem()));
+    connect(addAnimItemAct, SIGNAL(triggered()), this, SLOT(slotAddAnimationItem()));
 }
 
 // 创建菜单
@@ -57,6 +65,8 @@ void MainWindow::createMenus()
     itemsMenu->addAction(addTextItemAct);
     itemsMenu->addAction(addRectItemAct);
     itemsMenu->addAction(addAlphaItemAct);
+    itemsMenu->addAction(addFlashItemAct);
+    itemsMenu->addAction(addAnimItemAct);
 }
 
 // 初始化场景
@@ -74,6 +84,12 @@ void MainWindow::initScene()
     }
     for (i=0;i<3;i++) {
         slotAddAlphaItem();
+    }
+    for (i=0;i<3;i++) {
+        slotAddFlashItem();
+    }
+    for (i=0;i<3;i++) {
+        slotAddAnimationItem();
     }
 }
 
@@ -159,4 +175,31 @@ void MainWindow::slotAddAlphaItem()
     item->setFlag(QGraphicsItem::ItemIsMovable);
     item->setPos((qrand()%int(scene->sceneRect().width()))-200,
         (qrand()%int(scene->sceneRect().height()))-200);
+}
+
+// 在场景中加入一个闪烁圆
+void MainWindow::slotAddFlashItem()
+{
+    FlashItem *item = new FlashItem;
+    scene->addItem(item);
+    item->setPos((qrand()%int(scene->sceneRect().width()))-200,
+        (qrand()%int(scene->sceneRect().height()))-200);
+}
+
+// 在场景中加入一个动画星星
+void MainWindow::slotAddAnimationItem()
+{
+    StarItem *item = new StarItem;
+    QGraphicsItemAnimation *anim = new QGraphicsItemAnimation;
+    anim->setItem(item);
+    QTimeLine *timeLine = new QTimeLine(4000);
+    timeLine->setCurveShape(QTimeLine::SineCurve);
+    timeLine->setLoopCount(0);
+    anim->setTimeLine(timeLine);
+    int y = (qrand()%400) - 200;
+    for (int i=0;i<400;i++) {
+        anim->setPosAt(i/400.0, QPointF(i-200, y));
+    }
+    timeLine->start();
+    scene->addItem(item);
 }
