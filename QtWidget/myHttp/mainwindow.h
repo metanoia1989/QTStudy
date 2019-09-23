@@ -20,13 +20,22 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void startRequest(QUrl url);
 
 private slots:
     void replyFinished(QNetworkReply *);
+    void httpFinished();
+    void httpReadyRead();
+    void updateDataReadProgress(qint64, qint64);
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *manager;
+    QNetworkReply *reply;
+    QUrl url;
+    QFile *file;
 };
 
 #endif // MAINWINDOW_H
