@@ -57,6 +57,9 @@
          <property name="text">
           <string>tBtnListIni</string>
          </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
         </widget>
        </item>
        <item row="1" column="0">
@@ -68,6 +71,9 @@
          </property>
          <property name="text">
           <string>tBtnListClear</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
          </property>
         </widget>
        </item>
@@ -81,6 +87,9 @@
          <property name="text">
           <string>tBtnListInsert</string>
          </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
         </widget>
        </item>
        <item row="3" column="0">
@@ -93,6 +102,9 @@
          <property name="text">
           <string>tBtnListAppend</string>
          </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
         </widget>
        </item>
        <item row="4" column="0">
@@ -104,6 +116,9 @@
          </property>
          <property name="text">
           <string>tBtnListDelete</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
          </property>
         </widget>
        </item>
@@ -242,6 +257,9 @@
        </item>
        <item>
         <widget class="QListWidget" name="listWidget">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <item>
           <property name="text">
            <string>New Item</string>
