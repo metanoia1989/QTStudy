@@ -1,3 +1,4 @@
+// Button.qml
 import QtQuick 2.0
 
 Rectangle {
@@ -8,3 +9,6 @@ Rectangle {
         text: "Hello Qt Quick"
     }
 }
+
+// other.qml
+Button { buttonText: "click Me" }
