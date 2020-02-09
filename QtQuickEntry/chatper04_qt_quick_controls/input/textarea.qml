@@ -7,7 +7,6 @@ ApplicationWindow {
 
     ScrollView {
         anchors.fill: parent
-
         TextArea {
             text: "TextArea\n..\n..\n..\n..\n..\n..\n..\n..\n..\n..\n..\n.."
         }

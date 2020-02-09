@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>ImageViewWindow.qml</file>
+        <file>+android/main.qml</file>
+        <file>images/drawer.png</file>
+        <file>images/open.png</file>
+        <file>+android/qtquickcontrols2.conf</file>
+    </qresource>
+</RCC>
