@@ -19,6 +19,25 @@ TextField使用`placeholderText`属性设置了占位符文本，即当输入内
 TextField包含一个可视项目: background。通过定义这个项目，可以改变TextField的外观。
 
 TextField提供了3个信号: `pressAndHold(mouseEvent event)`、`pressed(MouseEvent event)`以及`released(MouseEvent event)`，分别在鼠标长时间按下鼠标按下以及鼠标释放时发射。
+```js
+TextField {
+    y: 10; width: 200
+    placeholderText: qsTr("Please enter a password")
+    echoMode: TextInput.PasswordEchoOnEdit
+    validator: IntValidator { bottom: 11; top: 20 }
+    onAccepted: console.debug(text)
+}
+
+TextField {
+    id: control
+    placeholderText: qsTr("Enter description")
+    background: Rectangle {
+        implicitWidth: 200; implicitHeight: 40
+        color: control.enabled ? "transparent" : "#353637"
+        border.color: control.enabled ? "#21be2b" : "transparent"
+    }
+}
+```
 
 ## TextArea
 TextArea是一个多行的文本输入框，它对应C++中的QTextEdit。
@@ -30,14 +49,44 @@ TextArea是一个多行的文本输入框，它对应C++中的QTextEdit。
 * 但是，TextArea本身不能够滚动，如果需要显示滚动条，则需要将TextArea放置在ScrollView中。
 * 与TextField类似， TextArea包含一个可视项目: background，通过定义这个项目，可以改变TextArea的外观。
 * TextArea同样提供了3个信号: `pressAndHold(mouseEvent event)`、`pressed(MouseEvent event)`以及`released(MouseEvent event)`，分别在鼠标长时间按下鼠标按下以及鼠标释放时发射。
+```js
+ApplicationWindow {
+    visible: true
+    width: 250; height: 100
+    
+    ScrollView {
+        anchors.fill: parent
+        TextArea {
+            text: "TextArea\n..\n..\n..\n..\n..\n..\n..\n..\n..\n..\n..\n.."
+        }
+    }
+}
+```
 
 ## ComboBox
 ComboBox是一种带有下拉选择框的按钮，对应C++中的QComboBox。
 * ComboBox可以使用一个字符串数组作为数据模型。ComboBox还可以使用ListModel作为数据模型。
+* ListElement有多个属性时，使用textRole指定显示那个属性。
 * ComboBox的`currentIndexChanged`信号，下拉选择变化时发射此信号。
 * ComboBox的`editable`属性可以设置这个ComboBox是不是可以编辑，将其设置为true，下拉框允许用户编辑数据。
 * 使用`selectAll`函数可以全选输入框中的内容。
 * 在用户输入时，ComboBox自动显示下拉框中匹配的数据，而且还可以通过`accepted`信号确定是否可以将用户输入的数据添加到下拉框中。在添加新的数据时，需要确定下拉框中没有重复项。
+```js
+ComboBox {
+    width: 200; currentIndex: 2
+    textRole: "text"
+    model: ListModel {
+        id: cbItems
+        ListElement { text: "Banana"; color: "Yellow" }
+        ListElement { text: "Apple"; color: "Green" }
+        ListElement { text: "Cocount"; color: "Brown" }
+    }
+    onCurrentIndexChanged: {
+        console.debug(cbItems.get(currentIndex).text + ","
+                      + cbItems.get(currentIndex).color)
+    }
+}
+```
 
 find函数用来查找当前输入的值是不是已经存在；如果不存在，则将其追加到下拉框数据的最后，然后设置下拉框的当前选择项为新增的数据项。
 find函数有两个参数，第一个参数是要检索的文本值，第二个参数是匹配方式。目前支持的匹配选项有：
@@ -56,6 +105,24 @@ find函数有两个参数，第一个参数是要检索的文本值，第二个�
 
 只读属性`acceptableInput`可以获取文本输入框中是否包含可接受的文本。如果设置了验证器，则只有当验证器验证通过时，该输入才会返回true。
 ComboBox包含4个可视项目: `background`、`contentItem`、`popup`和`delegate`通过定义这4个项目可 ComboBox以改变的外观。
+```js
+ComboBox {
+    width: 200; currentIndex: 2
+    textRole: "text"; editable: true
+    validator: RegExpValidator { ... }
+    model: ListModel {
+        id: cbItems
+        ListElement { text: "Banana"; color: "Yellow" }
+        ListElement { text: "Apple"; color: "Green" }
+        ListElement { text: "Cocount"; color: "Brown" }
+    }
+    onAccepted: {
+        if (find(editText) === -1) {
+            model.append({text: editText})
+        }
+    }
+}
+```
 
 ## SpinBox
 SpinBox允许用户通过单击向上、向下的指示按钮或键盘的上下箭头选择一个整数值，对应C++中的QSpinBox。
@@ -68,6 +135,26 @@ SpinBox允许用户通过单击向上、向下的指示按钮或键盘的上下�
 * 当SpinBox的`value`发生改变时，则发射`valueModified()`信号。
 
 虽然SpinBox内部基于整数，但可以自定义SpinBox的显示值，其主要思路是，将内部存储的整型与显示的文本做映射。通过使用`validator`、`valueFromText`和 `textFromValue`可以实现这种自定义。
+```js
+SpinBox {
+    id: levelBox
+    from: 0; to: items.length - 1; value: 1
+    editable: true
+    property var items: ["Small", "Medium", "Large"]
+    validator: RegExpValidator {
+        regExp: new RegExp("(Small|Medium|Large)", "i")
+    }
+    textFromValue: (value) => items[value];
+    valueFromText: (text) => {
+        for (let i=0; i<items.length; ++i) {
+            if (item[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                return i;
+        }
+        console.log(item[i], levelBox.value)
+        return levelBox.value
+    }
+}
+```
 
 SpinBox提供了一个`dislayText`属性，用于获取SpinBox当前显示的文本， `displayText`的值等价于
 ```js
@@ -91,6 +178,38 @@ Dial是一种转盘按钮，常见于传统的音响和工业设备，Dial对应
 * `live`属性用于设置转柄被拖动时，转盘是否应当实时更新数值。
 * 当转盘转动时，Dial会发出`moved`信号。
 * Dial包含两个可视项目: `background`和`handle`，通过定义这两个项目可以改变Dial的外观。
+```js
+Dial {
+    id: control
+    value: 40; from: 0; to: 100
+    background: Rectangle {
+        x: control.width / 2 - width /2;
+        y: control.height / 2 - height /2;
+        width: Math.max(64, Math.min(control.width, control.height))
+        height: width; color: "transparent"; radius: width / 2
+        border.color: control.pressed ? "#17a81a" : "#21be2b"
+        opacity: control.enabled ? 1 : 0.3
+    }
+    handle: Rectangle {
+        id: handleItem
+        x: control.background.x + control.background.width / 2 - width / 2
+        y: control.background.y + control.background.height / 2 - height / 2
+        width: 16; height:16
+        color: control.pressed ? "#17a81a" : "#21be2b"
+        radius: 8; antialiasing: true
+        opacity: control.enabled ? 1 : 0.3
+        transform: [
+            Translate {
+                y: -Math.min(control.background.width, control.background.height) * 0.4 + handleItem.height / 2
+            },
+            Rotation {
+                angle: control.angle
+                origin.x: handleItem.width / 2; origin.y: handleItem.height / 2
+            }
+        ]
+    }
+}
+```
 
 ## Slider
 Slider用于提供一个范围内的值的选择，对应C++中的QSlider。 
@@ -110,6 +229,35 @@ Slider有一个滑道和一个滑块，拖动这个滑块可以选择Slider控�
   * Slider.SnapOnRelease: 滑块在拖动时可以在任意位置，但释放时会固定到最近的步长位置。
 * Slider滑块在由用户交互改变位置时会发出`moved()`信号。
 * Slider包含两个可视项目: `background`和`handle`，通过定义这两个项目可以改变Slider的外观。
+```js
+Slider {
+    from: 1; to: 100; stepSize: 5; value: 25
+}
+
+Slider {
+    id: control
+    value: 0.5
+    background: Rectangle {
+        x: control.leftPadding
+        y: control.topPadding + control.availableHeight / 2 - height / 2
+        implicitWidth: 200; implicitHeight: 4
+        width: control.availableWidth; height: implicitHeight
+        radius: 2; color: "black"
+        Rectangle {
+            width: control.visualPosition * parent.width
+            height: parent.height
+            color: "#21be2b"; radius: 2
+        }
+    }
+    handle: Rectangle {
+        x: control.leftPadding + control.visualPosition * (control.availableWidth - width)
+        y: control.topPadding + control.availableHeight / 2 - height / 2
+        implicitWidth: 26; implicitHeight: 26
+        radius: 13; color: control.pressed ? "#f0f0f0" : "#f6f6f6"
+        border.color: "#bdbebf"
+    }
+}
+```
 
 ## RangeSlider
 RangeSlider与Slider类似，不同之处在于Slider只有一个滑块，用于选择一个值，而 RangeSlider有两个滑块，用于选择一个范围。
@@ -133,3 +281,44 @@ Tumbler的API类似于ListView和PathView，可以设置`model`和`delegate`属�
 
 Tumbler包含3个可视项目: `background`、`contentItem`和`delegate`，通过定义这3个项目可以改变Tumbler的外观。
 如果需要定义自己的`contentItem`，则可以使用ListView或者PathView作为根项目。对于可回环的Tumbler，使用PathView；对于不可回环的Tumbler，使用 ListView
+```js
+// 时间选择器
+Row {
+    Tumbler { id: hoursTumbler; model: 12 }
+    Tumbler { id: minutesTumbler; model: 60 }
+    Tumbler { id: amPmTumbler; model: ["AM", "PM"] }
+}
+// 修改样式
+Tumbler {
+    id: control; model: 15
+    background: Item {
+        Rectangle {
+            opacity: control.enabled ? 0.2 : 0.1
+            border.color: "#000000"
+            width: parent.width; height: 1
+            anchors.top: parent.top
+        }
+        Rectangle {
+            opacity: control.enabled ? 0.2 : 0.1
+            border.color: "#000000"
+            width: parent.width; height: 1
+            anchors.bottom: parent.bottom
+        }
+    }
+    delegate: Text {
+        text: qsTr("Item %1").arg(modelData + 1); font: control.font
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        opacity: 1.0 - Math.abs(Tumbler.displacement) / (control.visibleItemCount / 2)
+    }
+
+    Rectangle {
+        anchors.horizontalCenter: control.horizontalCenter
+        y: control.height * 0.4; width: 40; height: 1; color: "#21be2b"
+    }
+    Rectangle {
+        anchors.horizontalCenter: control.horizontalCenter
+        y: control.height * 0.6; width: 40; height: 1; color: "#21be2b"
+    }
+}
+```
