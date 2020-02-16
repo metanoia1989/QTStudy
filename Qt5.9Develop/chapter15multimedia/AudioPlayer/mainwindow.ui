@@ -29,7 +29,7 @@
             <string>添加</string>
            </property>
            <property name="icon">
-            <iconset resource="res.qrc">
+            <iconset resource="../VideoPlayer/res.qrc">
              <normaloff>:/images/images/316.bmp</normaloff>:/images/images/316.bmp</iconset>
            </property>
           </widget>
@@ -40,7 +40,7 @@
             <string>移除</string>
            </property>
            <property name="icon">
-            <iconset resource="res.qrc">
+            <iconset resource="../VideoPlayer/res.qrc">
              <normaloff>:/images/images/318.bmp</normaloff>:/images/images/318.bmp</iconset>
            </property>
           </widget>
@@ -51,7 +51,7 @@
             <string>清空</string>
            </property>
            <property name="icon">
-            <iconset resource="res.qrc">
+            <iconset resource="../VideoPlayer/res.qrc">
              <normaloff>:/images/images/214.bmp</normaloff>:/images/images/214.bmp</iconset>
            </property>
           </widget>
@@ -72,7 +72,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../VideoPlayer/res.qrc">
           <normaloff>:/images/images/620.bmp</normaloff>:/images/images/620.bmp</iconset>
         </property>
        </widget>
@@ -83,7 +83,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../VideoPlayer/res.qrc">
           <normaloff>:/images/images/622.bmp</normaloff>:/images/images/622.bmp</iconset>
         </property>
        </widget>
@@ -94,7 +94,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../VideoPlayer/res.qrc">
           <normaloff>:/images/images/624.bmp</normaloff>:/images/images/624.bmp</iconset>
         </property>
        </widget>
@@ -105,7 +105,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset>
           <normaloff>:/images/images/616.bmp</normaloff>:/images/images/616.bmp</iconset>
         </property>
        </widget>
@@ -116,7 +116,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset>
           <normaloff>:/images/images/630.bmp</normaloff>:/images/images/630.bmp</iconset>
         </property>
        </widget>
@@ -140,7 +140,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../VideoPlayer/res.qrc">
           <normaloff>:/images/images/volumn.bmp</normaloff>:/images/images/volumn.bmp</iconset>
         </property>
         <property name="flat">
@@ -197,8 +197,6 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
