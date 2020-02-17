@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>预设视角</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>20</y>
+      <width>161</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>FrontLow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Front</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FrontHigh</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>LeftLow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Left</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>LeftHigh</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>RightLow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Right</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>RightHigh</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>BehindLow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Behind</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>BehindHigh</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>IsometricLeft</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>IsometricLeftHigh</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>IsometricRight</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>IsometricRightHigh</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DirectlyAbove</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DirectlyAboveCW45</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DirectlyAboveCCW45</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FrontBelow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>LeftBelow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>RightBelow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>BehindBelow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DirectlyBelow</string>
+     </property>
+    </item>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
