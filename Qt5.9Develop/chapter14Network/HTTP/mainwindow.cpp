@@ -58,7 +58,7 @@ void MainWindow::on_btnDefaultPath_clicked()
     QString sub = "temp";
     dir.mkdir(sub);
 
-    QString path = QString("%1%2%3%2").arg(curPath).arg(QDir::separator()).arg(sub);
+    QString path = QString("%1/%3/").arg(curPath).arg(sub);
     ui->editPath->setText(path);
 }
 
