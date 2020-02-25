@@ -138,7 +138,15 @@ void MainWindow::on_actStop_triggered()
 // 发送组播消息
 void MainWindow::on_btnMulticast_clicked()
 {
+    quint16 groupPort = ui->spinPort->value();
+    QString msg = ui->editMsg->text();
+    QByteArray datagram = msg.toUtf8();
 
+    udpSocket->writeDatagram(datagram, groupAddress, groupPort);
+
+    ui->plainTextEdit->appendPlainText("[multicst] " + msg);
+    ui->editMsg->clear();
+    ui->editMsg->setFocus();
 }
 
 // 清空文本框
