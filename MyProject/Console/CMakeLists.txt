@@ -24,7 +24,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
+if(WIN32)
+    set(CMAKE_CXX_FLAGS "-mwindows")
+endif()
+
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
 
 if(ANDROID)
   add_library(Console SHARED

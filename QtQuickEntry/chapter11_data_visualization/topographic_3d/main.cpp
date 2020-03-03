@@ -15,6 +15,14 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
+    try
+    {
+        
+    }
+    catch (const std::exception&)
+    {
+        
+    }
 
     return app.exec();
 }

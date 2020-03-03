@@ -14,7 +14,6 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
     void updateCurDir(const QString& path); // 更新当前目录
-    void displayOutput(const QString& output); // 展示命令执行输出
 
 private slots:
     void executeCommand();
