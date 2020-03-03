@@ -3,8 +3,8 @@
 #include <QHBoxLayout>
 #include <QCoreApplication>
 #include <QFontMetrics>
-#include "exec.hpp"
 #include <string>
+#include "exec.hpp"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -15,16 +15,25 @@ Widget::Widget(QWidget *parent)
     m_displayContent->setReadOnly(true);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->addWidget(m_curDir);
+    QLabel *indicator = new QLabel("$ ");
+    hLayout->addWidget(indicator);
     hLayout->addWidget(m_inputCommnad);
 
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(m_displayContent);
+    mainLayout->addWidget(m_curDir);
     mainLayout->addLayout(hLayout);
 
-    setLayout(mainLayout);
+    // 设置Label
+    QString curPath = QCoreApplication::applicationDirPath();
+    QFontMetrics metrics(m_curDir->font());
+    QString elidedText = metrics.elidedText(curPath, Qt::ElideMiddle, width());
+    m_curDir->setText(elidedText);
+    m_curDir->setStyleSheet("color: blue");
 
-    initUI();
+    resize(400, 300);
+    setWindowTitle("控制台");
+    setLayout(mainLayout);
 
     // 输入框回车时执行命令
     connect(m_inputCommnad, &QLineEdit::returnPressed, this, &Widget::executeCommand);
@@ -34,19 +43,6 @@ Widget::~Widget()
 {
 }
 
-// 初始化界面
-void Widget::initUI()
-{
-    resize(400, 300);
-    setWindowTitle("控制台");
-
-    // 当前目录
-    QString curPath = QCoreApplication::applicationDirPath();
-    QFontMetrics metrics(m_curDir->font());
-    QString elidedText = metrics.elidedText(curPath, Qt::ElideMiddle, width()/ 4);
-    m_curDir->setText(elidedText);
-    m_curDir->setStyleSheet("color: blue");
-}
 
 // 更新当前目录
 void Widget::updateCurDir(const QString& path)
@@ -67,7 +63,11 @@ void Widget::executeCommand()
 {
     QString command = m_inputCommnad->text();
     m_inputCommnad->clear();
+
+
+
     std::string result = exec(command.toStdString().c_str());
-    displayOutput(QString::fromStdString(result));
+    auto text = QString::fromStdString(result);
+    displayOutput(text);
 }
 

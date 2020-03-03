@@ -13,7 +13,6 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
-    void initUI();	// 初始化界面
     void updateCurDir(const QString& path); // 更新当前目录
     void displayOutput(const QString& output); // 展示命令执行输出
 
