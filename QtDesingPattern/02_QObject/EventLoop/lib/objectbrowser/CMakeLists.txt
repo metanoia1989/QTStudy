@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.5)
+
+project(objectbrowser VERSION 1.0.0 DESCRIPTION "Qt对象浏览器" LANGUAGES CXX)
+
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
+FILE(GLOB LIBSRC *.cpp *.h *.qrc *.ui)
+
+add_library(${PROJECT_NAME} SHARED ${LIBSRC})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)

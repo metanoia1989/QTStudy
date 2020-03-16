@@ -136,5 +136,18 @@ int main(int argc, char *argv[])
         qDebug() << QString("regex pattern error on %1 : %2").arg(erroOffset).arg(errorString);
     }
 
+    //******************************
+    // Backreference
+    //******************************
+    qDebug() << "测试反向引用\n";
+    QRegularExpression reback(R"(^(?<txt>一个).*(\k<txt>)$)");
+    QString str = "一个 ##sdfsdf ： 一个";
+    QRegularExpressionMatch matchT = reback.match(str);
+    if (matchT.hasMatch()) {
+        QString txt = matchT.captured("txt");
+        qDebug() << "反向引用所有匹配：" << matchT.captured(0) <<
+            matchT.captured(1) << matchT.captured(2);
+    }
+
     return a.exec();
 }
