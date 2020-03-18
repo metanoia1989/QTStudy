@@ -40,6 +40,9 @@
           <property name="text">
            <string>Cards Left: </string>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+          </property>
          </widget>
         </item>
         <item>
@@ -243,6 +246,9 @@
          <widget class="QSpinBox" name="sb_playerScore">
           <property name="buttonSymbols">
            <enum>QAbstractSpinBox::NoButtons</enum>
+          </property>
+          <property name="suffix">
+           <string>千克</string>
           </property>
          </widget>
         </item>
