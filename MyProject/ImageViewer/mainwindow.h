@@ -45,7 +45,6 @@ private:
     QAction *copyAct;
     QAction *deleteAct;
     QAction *thumbnailPanelAct;
-
     QAction *framelessAct;
     QAction *settingsAct;
     QAction *exitAct;

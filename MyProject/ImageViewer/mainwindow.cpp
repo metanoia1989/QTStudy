@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     createMainMenu();
     createToolBar();
 
-//    layout->addWidget(mainMenu);
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +41,7 @@ void MainWindow::createMainMenu()
     QMenu *fileMenu = mainMenu->addMenu(tr("File")); // 文件菜单
     openAct = fileMenu->addAction(tr("Open file"));
     openAct->setIcon(awesome->icon(fa::folderopen));
+    openAct->setIconVisibleInMenu(false);
     openAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
     QAction *pasteAct = fileMenu->addAction(tr("Open image data from clipboard"));
     pasteAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_V));
@@ -65,10 +65,12 @@ void MainWindow::createMainMenu()
     QMenu *navigationMenu = mainMenu->addMenu(tr("Navigation")); // 导航菜单
     nextAct = navigationMenu->addAction(tr("View next image"));
     nextAct->setIcon(awesome->icon(fa::arrowright));
+    nextAct->setIconVisibleInMenu(false);
     QList<QKeySequence> keys { Qt::Key_Right, Qt::Key_PageDown };
     nextAct->setShortcuts(keys);
     prevAct = navigationMenu->addAction(tr("View previous image"));
     prevAct->setIcon(awesome->icon(fa::arrowleft));
+    prevAct->setIconVisibleInMenu(false);
     keys = { Qt::Key_Left, Qt::Key_PageUp };
     prevAct->setShortcuts(keys);
     navigationMenu->addSeparator();
@@ -82,9 +84,11 @@ void MainWindow::createMainMenu()
     QMenu *zoomMenu = mainMenu->addMenu(tr("Zoom")); // 缩放菜单
     zoomInAct = zoomMenu->addAction(tr("Zoom in"));
     zoomInAct->setIcon(awesome->icon(fa::searchplus));
+    zoomInAct->setIconVisibleInMenu(false);
     zoomInAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Equal));
     zoomOutAct = navigationMenu->addAction(tr("Zoom out"));
     zoomOutAct->setIcon(awesome->icon(fa::searchminus));
+    zoomOutAct->setIconVisibleInMenu(false);
     zoomOutAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Less));
     QAction *actualSizeAct = zoomMenu->addAction("Actual size");
     actualSizeAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_0));
@@ -93,9 +97,11 @@ void MainWindow::createMainMenu()
     autoZoomAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_A));
     scaleToWidthAct = zoomMenu->addAction(tr("Scale to width"));
     scaleToWidthAct->setIcon(awesome->icon(fa::textwidth));
+    scaleToWidthAct->setIconVisibleInMenu(false);
     scaleToWidthAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_W));
     scaleToHeightAct = zoomMenu->addAction(tr("Scale to height"));
     scaleToHeightAct->setIcon(awesome->icon(fa::textheight));
+    scaleToHeightAct->setIconVisibleInMenu(false);
     scaleToHeightAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_H));
     QAction *scaleToFitAct = zoomMenu->addAction(tr("Scale to fit"));
     scaleToFitAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_division));
@@ -132,21 +138,26 @@ void MainWindow::createMainMenu()
 
     rotateLeftAct = imageMenu->addAction("Rotate left");
     rotateLeftAct->setIcon(awesome->icon(fa::undo));
+    rotateLeftAct->setIconVisibleInMenu(false);
     rotateLeftAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Comma));
     rotateRightAct = imageMenu->addAction("Rotate left");
     rotateRightAct->setIcon(awesome->icon(fa::retweet));
+    rotateRightAct->setIconVisibleInMenu(false);
     rotateRightAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Period));
     filpHorizontalAct = imageMenu->addAction("Filp Horizontal");
     filpHorizontalAct->setIcon(awesome->icon(fa::expand));
+    filpHorizontalAct->setIconVisibleInMenu(false);
     filpHorizontalAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Semicolon));
     filpVerticalAct = imageMenu->addAction("Filp Vertical");
     filpVerticalAct->setIcon(awesome->icon(fa::compress));
+    filpVerticalAct->setIconVisibleInMenu(false);
     filpVerticalAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_QuoteLeft));
     imageMenu->addSeparator();
     QAction *renameAct = imageMenu->addAction(tr("Rename image"));
     renameAct->setShortcut(Qt::Key_F2);
     deleteAct = imageMenu->addAction(tr("Move to recycle bin"));
     deleteAct->setIcon(awesome->icon(fa::trash));
+    deleteAct->setIconVisibleInMenu(false);
     deleteAct->setShortcut(Qt::Key_Delete);
     QAction *completeDelAct = imageMenu->addAction(tr("Delete from hard disk"));
     completeDelAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_Delete));
@@ -162,6 +173,7 @@ void MainWindow::createMainMenu()
     QMenu *clipboardMenu = mainMenu->addMenu(tr("Clipboard")); // 剪切板菜单
     copyAct = clipboardMenu->addAction("Copy");
     copyAct->setIcon(awesome->icon(fa::copy));
+    copyAct->setIconVisibleInMenu(false);
     copyAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_C));
     QAction *copyDataAct = clipboardMenu->addAction("Copy image data");
     copyDataAct->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_C));
@@ -177,9 +189,11 @@ void MainWindow::createMainMenu()
 
     windowFitAct = mainMenu->addAction(tr("Window fit"));
     windowFitAct->setIcon(awesome->icon(fa::windows));
+    windowFitAct->setIconVisibleInMenu(false);
     windowFitAct->setShortcut(Qt::Key_F9);
     framelessAct = mainMenu->addAction(tr("Frameless"));
     framelessAct->setIcon(awesome->icon(fa::genderless));
+    framelessAct->setIconVisibleInMenu(false);
     framelessAct->setShortcut(Qt::Key_F10);
     QAction *fullScreenAct = mainMenu->addAction(tr("Full screen"));
     fullScreenAct->setShortcut(QKeySequence(Qt::ALT+Qt::Key_Enter));
@@ -201,6 +215,7 @@ void MainWindow::createMainMenu()
     toolbarAct->setChecked(true);
     thumbnailPanelAct = layoutMenu->addAction(tr("Thumbnail panel"));
     thumbnailPanelAct->setIcon(awesome->icon(fa::image));
+    thumbnailPanelAct->setIconVisibleInMenu(false);
     thumbnailPanelAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
     thumbnailPanelAct->setCheckable(true);
     QAction *checkerboardBgAct = layoutMenu->addAction(tr("Checkerboard background"));
@@ -267,11 +282,7 @@ void MainWindow::createToolBar()
     // 点击菜单按钮，弹出菜单
     QWidget *menuWidget = toolbar->widgetForAction(menuAct);
     connect(menuAct, &QAction::triggered, [=]{
-        int x=  menuWidget->width() - mainMenu->width() + 2;
-        QMenu menu;
-        qDebug() << menu.width();
-        qDebug() << QString("menuWidget.width - mainMnue.width = x ===> %1 - %2 = %3")
-                        .arg(menuWidget->width()).arg(mainMenu->width()).arg(x);
+        int x=  menuWidget->width() - mainMenu->sizeHint().width() + 2;
         mainMenu->popup(menuWidget->mapToGlobal(QPoint(x, menuWidget->height())));
     });
 
