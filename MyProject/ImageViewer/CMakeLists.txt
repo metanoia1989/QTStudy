@@ -21,6 +21,7 @@ add_executable(ImageViewer
   mainwindow.cpp
   mainwindow.h
   utils.hpp
+  res.qrc
 )
 
 target_link_libraries(ImageViewer PRIVATE 

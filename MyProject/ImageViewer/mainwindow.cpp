@@ -2,6 +2,9 @@
 #include "utils.hpp"
 #include <QCoreApplication>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QPushButton>
 #include <QAction>
 #include <QMenu>
@@ -9,25 +12,80 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QDebug>
+#include <QWheelEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
+    QVBoxLayout *vlayout = new QVBoxLayout();
+    QWidget *widget = new QWidget();
+    widget->setLayout(vlayout);
     setCentralWidget(widget);
 
     imageLabel = new QLabel("图片展示");
-    layout->addWidget(imageLabel);
+    imageLabel->setPixmap(QPixmap(":/assets/images/pic_054.jpg"));
+    imageLabel->setAlignment(Qt::AlignCenter);
+    vlayout->addWidget(imageLabel);
+
+    QWidget *thumbnailView = new QWidget();
+    thumbnailLayout = new QHBoxLayout();
+    thumbnailView->setLayout(thumbnailLayout);
+    initThumbnailView();
+
+    scrollView = new QScrollArea();
+    scrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    scrollView->setWidget(thumbnailView);
+    scrollView->viewport()->installEventFilter(this);
+    vlayout->addWidget(scrollView);
+
 
     createMainMenu();
     createToolBar();
-
 }
 
 MainWindow::~MainWindow()
 {
+}
+
+/**
+ * @brief MainWindow::eventFilter
+ * @details 监听底部thumbnail ScrollArea的鼠标滚动事件，水平移动内容
+ * @param obj
+ * @param event
+ * @return
+ */
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == scrollView->viewport() && event->type() == QEvent::Wheel) {
+        QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
+        QCoreApplication::sendEvent(scrollView->horizontalScrollBar(), wheelEvent);
+        return true;
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
+void MainWindow::initThumbnailView()
+{
+    QList<QString> imgPaths {
+        ":/assets/images/pic_048.jpg",
+        ":/assets/images/pic_049.jpg",
+        ":/assets/images/pic_050.jpg",
+        ":/assets/images/pic_057.jpg",
+        ":/assets/images/pic_051.jpg",
+        ":/assets/images/pic_052.jpg",
+        ":/assets/images/pic_054.jpg",
+        ":/assets/images/pic_058.jpg",
+        ":/assets/images/pic_059.jpg"
+    };
+    for (int i = 0; i < 30; i++) {
+        QLabel *label = new QLabel(QString("Image %1").arg(i));
+        QPixmap img(imgPaths.at(i % imgPaths.size()));
+        label->setPixmap(img.scaled(113, 125, Qt::KeepAspectRatio));
+        thumbnailLayout->addWidget(label);
+    }
 }
 
 void MainWindow::createMainMenu()
@@ -110,7 +168,7 @@ void MainWindow::createMainMenu()
     QAction *lockZoomAct = zoomMenu->addAction(tr("Lock zoom ratio"));
     lockZoomAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_L));
 
-    QMenu *imageMenu = mainMenu->addMenu(tr("Image")); // 图片菜单
+    imageMenu = mainMenu->addMenu(tr("Image")); // 图片菜单，同时也是图片展示区域的右键菜单
 
     QMenu *viewChannelMenu = imageMenu->addMenu(tr("View channels")); // 颜色通道菜单
     QActionGroup *viewChannelGrp = new QActionGroup(viewChannelMenu);
@@ -288,3 +346,4 @@ void MainWindow::createToolBar()
 
     toolbar->setIconSize(QSize(40, 40));
 }
+

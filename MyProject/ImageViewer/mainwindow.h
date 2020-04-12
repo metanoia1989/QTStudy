@@ -8,6 +8,8 @@ class QAction;
 class QLabel;
 class QImage;
 class QMenu;
+class QScrollArea;
+class QHBoxLayout;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -15,18 +17,25 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     void createMainMenu();  // 创建主菜单，包括了初始化QAction
     void createToolBar(); // 创建工具条
+    void initThumbnailView(); // 初始化thumbnail列表
 
 
     QImage image;
     QLabel *imageLabel;
+    QScrollArea *scrollView;
+    QHBoxLayout *thumbnailLayout;
 
     QMenu *mainMenu;
+    QMenu *imageMenu;
     QAction *menuAct;
     QAction *prevAct;
     QAction *nextAct;
