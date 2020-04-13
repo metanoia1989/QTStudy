@@ -29,7 +29,11 @@ private:
     void initThumbnailView(); // 初始化thumbnail列表
 
 
-    QImage image;
+    QImage curImage; // 当前查看的图片
+    QList<QString> imgPaths;  // 一个目录下的所有图片路径
+    QList<QPixmap> thumbnails; // 所有图片的缩略图
+    int index; // 选择图片的索引
+
     QLabel *imageLabel;
     QScrollArea *scrollView;
     QHBoxLayout *thumbnailLayout;

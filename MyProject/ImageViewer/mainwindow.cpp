@@ -33,13 +33,13 @@ MainWindow::MainWindow(QWidget *parent)
     initThumbnailView();
 
     scrollView = new QScrollArea();
+    scrollView->setFrameShape(QFrame::NoFrame); // 隐藏边框
     scrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     scrollView->setWidget(thumbnailView);
     scrollView->viewport()->installEventFilter(this);
     vlayout->addWidget(scrollView);
-
 
     createMainMenu();
     createToolBar();
@@ -69,7 +69,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 void MainWindow::initThumbnailView()
 {
-    QList<QString> imgPaths {
+    imgPaths = {
         ":/assets/images/pic_048.jpg",
         ":/assets/images/pic_049.jpg",
         ":/assets/images/pic_050.jpg",
