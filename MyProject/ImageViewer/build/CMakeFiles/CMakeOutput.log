@@ -1,0 +1,49 @@
+The system is: Windows - 10.0.18362 - AMD64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: F:/Program/VisualStudio/CommunityIDE/VC/Tools/MSVC/14.22.27905/bin/Hostx86/x86/cl.exe 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Microsoft (R) C/C++ Optimizing Compiler Version 19.22.27905 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+CMakeCXXCompilerId.cpp
+Microsoft (R) Incremental Linker Version 14.22.27905.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:CMakeCXXCompilerId.exe 
+CMakeCXXCompilerId.obj 
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.exe"
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.obj"
+
+The CXX compiler identification is MSVC, found in "D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/3.15.0-rc2/CompilerIdCXX/CMakeCXXCompilerId.exe"
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):nmake /nologo cmTC_87f22\fast && 	F:\Program\VisualStudio\CommunityIDE\VC\Tools\MSVC\14.22.27905\bin\HostX86\x86\nmake.exe -f CMakeFiles\cmTC_87f22.dir\build.make /nologo -L                  CMakeFiles\cmTC_87f22.dir\build
+Building CXX object CMakeFiles/cmTC_87f22.dir/testCXXCompiler.cxx.obj
+	F:\Program\VisualStudio\CommunityIDE\VC\Tools\MSVC\14.22.27905\bin\Hostx86\x86\cl.exe @C:\Users\Administrator\AppData\Local\Temp\nm7765.tmp
+testCXXCompiler.cxx
+Linking CXX executable cmTC_87f22.exe
+	F:\Program\CMake\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\cmTC_87f22.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100177~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100177~1.0\x86\mt.exe --manifests  -- F:\Program\VisualStudio\CommunityIDE\VC\Tools\MSVC\14.22.27905\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\cmTC_87f22.dir\objects1.rsp @C:\Users\Administrator\AppData\Local\Temp\nm787F.tmp
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):nmake /nologo cmTC_31e98\fast && 	F:\Program\VisualStudio\CommunityIDE\VC\Tools\MSVC\14.22.27905\bin\HostX86\x86\nmake.exe -f CMakeFiles\cmTC_31e98.dir\build.make /nologo -L                  CMakeFiles\cmTC_31e98.dir\build
+Building CXX object CMakeFiles/cmTC_31e98.dir/CMakeCXXCompilerABI.cpp.obj
+	F:\Program\VisualStudio\CommunityIDE\VC\Tools\MSVC\14.22.27905\bin\Hostx86\x86\cl.exe @C:\Users\Administrator\AppData\Local\Temp\nm7FD1.tmp
+CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_31e98.exe
+	F:\Program\CMake\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\cmTC_31e98.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100177~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100177~1.0\x86\mt.exe --manifests  -- F:\Program\VisualStudio\CommunityIDE\VC\Tools\MSVC\14.22.27905\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\cmTC_31e98.dir\objects1.rsp @C:\Users\Administrator\AppData\Local\Temp\nm80AD.tmp
+
+
+

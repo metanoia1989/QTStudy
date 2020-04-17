@@ -13,6 +13,7 @@
 #include <QToolButton>
 #include <QDebug>
 #include <QWheelEvent>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -43,10 +44,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     createMainMenu();
     createToolBar();
+
+    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
 }
 
 MainWindow::~MainWindow()
 {
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    setWindowState(Qt::WindowMinimized);
+//    event->ignore();
 }
 
 /**

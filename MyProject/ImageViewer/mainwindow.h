@@ -20,8 +20,11 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    int count = 5;
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     void createMainMenu();  // 创建主菜单，包括了初始化QAction
