@@ -1,8 +1,0 @@
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/edit_cache.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/ImageViewer.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/rebuild_cache.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/CMakeFiles/ImageViewer_autogen.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/lib/QtAwesome/CMakeFiles/QtAwesome.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/lib/QtAwesome/CMakeFiles/edit_cache.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/lib/QtAwesome/CMakeFiles/rebuild_cache.dir
-D:/WorkSpace/QT/QTStudy/MyProject/ImageViewer/build/lib/QtAwesome/CMakeFiles/QtAwesome_autogen.dir

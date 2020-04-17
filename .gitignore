@@ -1,5 +1,6 @@
 # 要忽略的自动生成的目录
 build-**/
+build/
 CMakeLists.txt.user
 
 # This file is used to ignore files which are generated
