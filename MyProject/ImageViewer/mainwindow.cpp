@@ -23,9 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     widget->setLayout(vlayout);
     setCentralWidget(widget);
 
-    imageLabel = new QLabel("图片展示");
-    imageLabel->setPixmap(QPixmap(":/assets/images/pic_054.jpg"));
-    imageLabel->setAlignment(Qt::AlignCenter);
+    imageLabel = new QLabel();
     vlayout->addWidget(imageLabel);
 
     QWidget *thumbnailView = new QWidget();
@@ -61,9 +59,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 /**
  * @brief MainWindow::eventFilter
  * @details 监听底部thumbnail ScrollArea的鼠标滚动事件，水平移动内容
- * @param obj
- * @param event
- * @return
  */
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
@@ -78,6 +73,16 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 void MainWindow::initThumbnailView()
 {
+    qDebug() << QCoreApplication::applicationDirPath();
+    if (openPath.isNull()) {
+        imgPaths = {
+            QCoreApplication::applicationDirPath() + "/default.jpg",
+        };
+        imgIndex = 0;
+        curImage = QImage(imgPaths.at(imgIndex));
+        imageLabel->setPixmap(QPixmap::fromImage(curImage));
+        return;
+    }
     imgPaths = {
         ":/assets/images/pic_048.jpg",
         ":/assets/images/pic_049.jpg",
@@ -99,15 +104,14 @@ void MainWindow::initThumbnailView()
 
 void MainWindow::createMainMenu()
 {
-    auto awesome = qtAwesome();
     mainMenu = new QMenu(this);
 
     menuAct = new QAction(this);
-    menuAct->setIcon((awesome->icon(fa::bars)));
+    menuAct->setIcon(QIcon(":/assets/icons/menu.svg"));
 
     QMenu *fileMenu = mainMenu->addMenu(tr("File")); // 文件菜单
     openAct = fileMenu->addAction(tr("Open file"));
-    openAct->setIcon(awesome->icon(fa::folderopen));
+    openAct->setIcon(QIcon(":/assets/icons/open.svg"));
     openAct->setIconVisibleInMenu(false);
     openAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
     QAction *pasteAct = fileMenu->addAction(tr("Open image data from clipboard"));
@@ -131,12 +135,12 @@ void MainWindow::createMainMenu()
 
     QMenu *navigationMenu = mainMenu->addMenu(tr("Navigation")); // 导航菜单
     nextAct = navigationMenu->addAction(tr("View next image"));
-    nextAct->setIcon(awesome->icon(fa::arrowright));
+    nextAct->setIcon(QIcon(":/assets/icons/next.svg"));
     nextAct->setIconVisibleInMenu(false);
     QList<QKeySequence> keys { Qt::Key_Right, Qt::Key_PageDown };
     nextAct->setShortcuts(keys);
     prevAct = navigationMenu->addAction(tr("View previous image"));
-    prevAct->setIcon(awesome->icon(fa::arrowleft));
+    prevAct->setIcon(QIcon(":/assets/icons/back.svg"));
     prevAct->setIconVisibleInMenu(false);
     keys = { Qt::Key_Left, Qt::Key_PageUp };
     prevAct->setShortcuts(keys);
@@ -150,11 +154,11 @@ void MainWindow::createMainMenu()
 
     QMenu *zoomMenu = mainMenu->addMenu(tr("Zoom")); // 缩放菜单
     zoomInAct = zoomMenu->addAction(tr("Zoom in"));
-    zoomInAct->setIcon(awesome->icon(fa::searchplus));
+    zoomInAct->setIcon(QIcon(":/assets/icons/zoomin.svg"));
     zoomInAct->setIconVisibleInMenu(false);
     zoomInAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Equal));
     zoomOutAct = navigationMenu->addAction(tr("Zoom out"));
-    zoomOutAct->setIcon(awesome->icon(fa::searchminus));
+    zoomOutAct->setIcon(QIcon(":/assets/icons/zoomout.svg"));
     zoomOutAct->setIconVisibleInMenu(false);
     zoomOutAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Less));
     QAction *actualSizeAct = zoomMenu->addAction("Actual size");
@@ -163,11 +167,11 @@ void MainWindow::createMainMenu()
     QAction *autoZoomAct = zoomMenu->addAction("Auto zoom");
     autoZoomAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_A));
     scaleToWidthAct = zoomMenu->addAction(tr("Scale to width"));
-    scaleToWidthAct->setIcon(awesome->icon(fa::textwidth));
+    scaleToWidthAct->setIcon(QIcon(":/assets/icons/scaletowidth.svg"));
     scaleToWidthAct->setIconVisibleInMenu(false);
     scaleToWidthAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_W));
     scaleToHeightAct = zoomMenu->addAction(tr("Scale to height"));
-    scaleToHeightAct->setIcon(awesome->icon(fa::textheight));
+    scaleToHeightAct->setIcon(QIcon(":/assets/icons/scaletoheight.svg"));
     scaleToHeightAct->setIconVisibleInMenu(false);
     scaleToHeightAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_H));
     QAction *scaleToFitAct = zoomMenu->addAction(tr("Scale to fit"));
@@ -204,26 +208,26 @@ void MainWindow::createMainMenu()
     allChannelAct->setChecked(true);
 
     rotateLeftAct = imageMenu->addAction("Rotate left");
-    rotateLeftAct->setIcon(awesome->icon(fa::undo));
+    rotateLeftAct->setIcon(QIcon(":/assets/icons/leftrotate.svg"));
     rotateLeftAct->setIconVisibleInMenu(false);
     rotateLeftAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Comma));
     rotateRightAct = imageMenu->addAction("Rotate left");
-    rotateRightAct->setIcon(awesome->icon(fa::retweet));
+    rotateRightAct->setIcon(QIcon(":/assets/icons/rightrotate.svg"));
     rotateRightAct->setIconVisibleInMenu(false);
     rotateRightAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Period));
     filpHorizontalAct = imageMenu->addAction("Filp Horizontal");
-    filpHorizontalAct->setIcon(awesome->icon(fa::expand));
+    filpHorizontalAct->setIcon(QIcon(":/assets/icons/fliphorz.svg"));
     filpHorizontalAct->setIconVisibleInMenu(false);
     filpHorizontalAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Semicolon));
     filpVerticalAct = imageMenu->addAction("Filp Vertical");
-    filpVerticalAct->setIcon(awesome->icon(fa::compress));
+    filpVerticalAct->setIcon(QIcon(":/assets/icons/flipvert.svg"));
     filpVerticalAct->setIconVisibleInMenu(false);
     filpVerticalAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_QuoteLeft));
     imageMenu->addSeparator();
     QAction *renameAct = imageMenu->addAction(tr("Rename image"));
     renameAct->setShortcut(Qt::Key_F2);
     deleteAct = imageMenu->addAction(tr("Move to recycle bin"));
-    deleteAct->setIcon(awesome->icon(fa::trash));
+    deleteAct->setIcon(QIcon(":/assets/icons/delete.svg"));
     deleteAct->setIconVisibleInMenu(false);
     deleteAct->setShortcut(Qt::Key_Delete);
     QAction *completeDelAct = imageMenu->addAction(tr("Delete from hard disk"));
@@ -239,8 +243,6 @@ void MainWindow::createMainMenu()
 
     QMenu *clipboardMenu = mainMenu->addMenu(tr("Clipboard")); // 剪切板菜单
     copyAct = clipboardMenu->addAction("Copy");
-    copyAct->setIcon(awesome->icon(fa::copy));
-    copyAct->setIconVisibleInMenu(false);
     copyAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_C));
     QAction *copyDataAct = clipboardMenu->addAction("Copy image data");
     copyDataAct->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_C));
@@ -255,14 +257,13 @@ void MainWindow::createMainMenu()
     mainMenu->addSeparator();
 
     windowFitAct = mainMenu->addAction(tr("Window fit"));
-    windowFitAct->setIcon(awesome->icon(fa::windows));
+    windowFitAct->setIcon(QIcon(":/assets/icons/autosizewindow.svg"));
     windowFitAct->setIconVisibleInMenu(false);
     windowFitAct->setShortcut(Qt::Key_F9);
-    framelessAct = mainMenu->addAction(tr("Frameless"));
-    framelessAct->setIcon(awesome->icon(fa::genderless));
-    framelessAct->setIconVisibleInMenu(false);
-    framelessAct->setShortcut(Qt::Key_F10);
-    QAction *fullScreenAct = mainMenu->addAction(tr("Full screen"));
+    fullScreenAct = mainMenu->addAction(tr("Window fit"));
+    fullScreenAct->setIcon(QIcon(":/assets/icons/fullscreen.svg"));
+    fullScreenAct->setIconVisibleInMenu(false);
+    fullScreenAct->setShortcut(QKeySequence(Qt::ALT+Qt::Key_Enter));
     fullScreenAct->setShortcut(QKeySequence(Qt::ALT+Qt::Key_Enter));
 
     QMenu *slideshowMenu = mainMenu->addMenu(tr("Slideshow")); // 幻灯片菜单
@@ -281,7 +282,7 @@ void MainWindow::createMainMenu()
     toolbarAct->setCheckable(true);
     toolbarAct->setChecked(true);
     thumbnailPanelAct = layoutMenu->addAction(tr("Thumbnail panel"));
-    thumbnailPanelAct->setIcon(awesome->icon(fa::image));
+    thumbnailPanelAct->setIcon(QIcon(":/assets/icons/thumbnail.svg"));
     thumbnailPanelAct->setIconVisibleInMenu(false);
     thumbnailPanelAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
     thumbnailPanelAct->setCheckable(true);
@@ -339,7 +340,6 @@ void MainWindow::createToolBar()
     toolbar->addAction(zoomOutAct);
     toolbar->addSeparator();
     toolbar->addAction(openAct);
-    toolbar->addAction(framelessAct);
     toolbar->addAction(windowFitAct);
     toolbar->addSeparator();
     toolbar->addAction(deleteAct);

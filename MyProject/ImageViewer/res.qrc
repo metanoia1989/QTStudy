@@ -9,5 +9,35 @@
         <file>assets/images/pic_048.jpg</file>
         <file>assets/images/pic_049.jpg</file>
         <file>assets/images/pic_050.jpg</file>
+        <file>assets/icons/autosizewindow.svg</file>
+        <file>assets/icons/autozoom.svg</file>
+        <file>assets/icons/back.svg</file>
+        <file>assets/icons/checkerboard.svg</file>
+        <file>assets/icons/convert.svg</file>
+        <file>assets/icons/delete.svg</file>
+        <file>assets/icons/edit.svg</file>
+        <file>assets/icons/fliphorz.svg</file>
+        <file>assets/icons/flipvert.svg</file>
+        <file>assets/icons/fullscreen.svg</file>
+        <file>assets/icons/gofirst.svg</file>
+        <file>assets/icons/golast.svg</file>
+        <file>assets/icons/gotoimage.svg</file>
+        <file>assets/icons/leftrotate.svg</file>
+        <file>assets/icons/menu.svg</file>
+        <file>assets/icons/next.svg</file>
+        <file>assets/icons/open.svg</file>
+        <file>assets/icons/print.svg</file>
+        <file>assets/icons/refresh.svg</file>
+        <file>assets/icons/rightrotate.svg</file>
+        <file>assets/icons/scaletofill.svg</file>
+        <file>assets/icons/scaletofit.svg</file>
+        <file>assets/icons/scaletoheight.svg</file>
+        <file>assets/icons/scaletowidth.svg</file>
+        <file>assets/icons/slideshow.svg</file>
+        <file>assets/icons/thumbnail.svg</file>
+        <file>assets/icons/zoomin.svg</file>
+        <file>assets/icons/zoomlock.svg</file>
+        <file>assets/icons/zoomout.svg</file>
+        <file>assets/icons/zoomtofit.svg</file>
     </qresource>
 </RCC>

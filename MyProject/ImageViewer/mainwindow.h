@@ -18,9 +18,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-    int count = 5;
+    ~MainWindow() override;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -32,10 +30,11 @@ private:
     void initThumbnailView(); // 初始化thumbnail列表
 
 
+    QString openPath; // 选择打开的路径
     QImage curImage; // 当前查看的图片
     QList<QString> imgPaths;  // 一个目录下的所有图片路径
     QList<QPixmap> thumbnails; // 所有图片的缩略图
-    int index; // 选择图片的索引
+    int imgIndex; // 选择图片的索引
 
     QLabel *imageLabel;
     QScrollArea *scrollView;
@@ -61,7 +60,6 @@ private:
     QAction *copyAct;
     QAction *deleteAct;
     QAction *thumbnailPanelAct;
-    QAction *framelessAct;
     QAction *settingsAct;
     QAction *exitAct;
 };

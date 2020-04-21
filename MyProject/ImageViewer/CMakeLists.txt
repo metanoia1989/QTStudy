@@ -27,3 +27,5 @@ add_executable(ImageViewer
 target_link_libraries(ImageViewer PRIVATE 
   Qt5::Widgets
   QtAwesome)
+
+configure_file(setup/assets/default.jpg default.jpg COPYONLY)
