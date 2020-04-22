@@ -21,6 +21,7 @@ add_executable(ImageViewer
   mainwindow.cpp
   mainwindow.h
   utils.hpp
+  constants.hpp
   res.qrc
 )
 

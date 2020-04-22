@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "utils.hpp"
+#include "constants.hpp"
 #include <QCoreApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -24,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(widget);
 
     imageLabel = new QLabel();
+    imageLabel->setAlignment(Qt::AlignCenter);
+    imageLabel->setFixedSize(constants::ViewWidth, constants::ViewHeight);
     vlayout->addWidget(imageLabel);
 
     QWidget *thumbnailView = new QWidget();
@@ -73,33 +76,45 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 void MainWindow::initThumbnailView()
 {
-    qDebug() << QCoreApplication::applicationDirPath();
-    if (openPath.isNull()) {
-        imgPaths = {
-            QCoreApplication::applicationDirPath() + "/default.jpg",
-        };
-        imgIndex = 0;
-        curImage = QImage(imgPaths.at(imgIndex));
-        imageLabel->setPixmap(QPixmap::fromImage(curImage));
-        return;
+    if (QCoreApplication::arguments().size() > 1) {
+        const QString FILENAME = QCoreApplication::arguments().at(1);
+        // FILENAME now contains path and name of the file to open.
+        QDir curFile{FILENAME};
+        curPath = curFile.homePath();
     }
-    imgPaths = {
-        ":/assets/images/pic_048.jpg",
-        ":/assets/images/pic_049.jpg",
-        ":/assets/images/pic_050.jpg",
-        ":/assets/images/pic_057.jpg",
-        ":/assets/images/pic_051.jpg",
-        ":/assets/images/pic_052.jpg",
-        ":/assets/images/pic_054.jpg",
-        ":/assets/images/pic_058.jpg",
-        ":/assets/images/pic_059.jpg"
-    };
-    for (int i = 0; i < 30; i++) {
-        QLabel *label = new QLabel(QString("Image %1").arg(i));
-        QPixmap img(imgPaths.at(i % imgPaths.size()));
-        label->setPixmap(img.scaled(113, 125, Qt::KeepAspectRatio));
-        thumbnailLayout->addWidget(label);
+    QString file = "D:/Image/lady/pic_033.jpg";
+    if (QFile::exists(file)) {
+        QFileInfo curFile{file};
+        curPath = curFile.absoluteDir();
     }
+
+//    if (curPath.isNull()) {
+//        imgPaths = {
+//            QCoreApplication::applicationDirPath() + "/default.jpg",
+//        };
+//        imgIndex = 0;
+//        curImage = QImage(imgPaths.at(imgIndex)).scaledToHeight(constants::ViewHeight);
+//        imageLabel->setPixmap(QPixmap::fromImage(curImage));
+//        return;
+//    }
+
+//    imgPaths = {
+//        ":/assets/images/pic_048.jpg",
+//        ":/assets/images/pic_049.jpg",
+//        ":/assets/images/pic_050.jpg",
+//        ":/assets/images/pic_057.jpg",
+//        ":/assets/images/pic_051.jpg",
+//        ":/assets/images/pic_052.jpg",
+//        ":/assets/images/pic_054.jpg",
+//        ":/assets/images/pic_058.jpg",
+//        ":/assets/images/pic_059.jpg"
+//    };
+//    for (int i = 0; i < 30; i++) {
+//        QLabel *label = new QLabel(QString("Image %1").arg(i));
+//        QPixmap img(imgPaths.at(i % imgPaths.size()));
+//        label->setPixmap(img.scaledToHeight(constants::ThumbHeight));
+//        thumbnailLayout->addWidget(label);
+//    }
 }
 
 void MainWindow::createMainMenu()

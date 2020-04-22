@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -30,7 +31,7 @@ private:
     void initThumbnailView(); // 初始化thumbnail列表
 
 
-    QString openPath; // 选择打开的路径
+    QDir curPath; // 选择打开的路径
     QImage curImage; // 当前查看的图片
     QList<QString> imgPaths;  // 一个目录下的所有图片路径
     QList<QPixmap> thumbnails; // 所有图片的缩略图
