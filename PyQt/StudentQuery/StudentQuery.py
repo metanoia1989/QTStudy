@@ -59,6 +59,7 @@ class StudentQuery(QWidget):
         self.setLayout(vbox)
         
         self.queryBtn.clicked.connect(self.queryStudent)
+        self.textInput.returnPressed.connect(self.queryStudent)
         
     def center(self):
         """
