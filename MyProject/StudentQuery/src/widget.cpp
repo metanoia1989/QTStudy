@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QtNetwork/QNetworkRequest>
 #include <QIcon>
 #include <QFont>
@@ -24,12 +25,13 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
                    Qt::WindowCloseButtonHint |
                    Qt::WindowStaysOnTopHint);
     resize(300, 100);
+    setWindowIcon(QIcon(":/app.ico"));
 
 
     auto hbox = new QHBoxLayout();
     textInput = new QLineEdit();
     queryBtn = new QPushButton();
-    queryBtn->setIcon(QIcon(":/app.ico"));
+    queryBtn->setIcon(QIcon(":/search.png"));
     hbox->addWidget(textInput);
     hbox->addWidget(queryBtn);
 
@@ -97,7 +99,7 @@ void Widget::queryStudent()
 
     tableWidget->setRowCount(0);
 
-    QUrl url = QUrl(QString("http://azxfsite.test/extra_query.php"));
+    QUrl url = QUrl(QString("http://www.anzhuoxfpx.com/extra_query.php"));
     auto request = QNetworkRequest(url);
     // request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencode");
     QByteArray data; 
@@ -112,28 +114,34 @@ void Widget::queryStudent()
 
 void Widget::handleResponse(QNetworkReply *reply)
 {
-    qDebug() << "响应信息" << QString::fromStdString(reply->readAll().toStdString()); 
     auto error = reply->error();
     if (error == QNetworkReply::NoError) {
         QByteArray buffer = reply->readAll();
-        QJsonObject json = QJsonDocument::fromJson(buffer.toUtf8()).object();
-        qDebug() << json;
+        if (buffer.isEmpty()) return;
+        QJsonParseError jsonError;
+        QJsonObject json = QJsonDocument::fromJson(buffer, &jsonError).object();
+        if (jsonError.error != QJsonParseError::NoError) {
+            return showError(QString("json解析错误：%1").arg(jsonError.errorString()));
+        }
              
         if (json["code"].toInt() == 0) {
             queryBtn->setEnabled(true);
-            QJsonObject data = json["data"].toObject();
-            QList<QString> rowData = {
-                data["usertruename"].toString(),
-                data["username"].toString(),
-                data["groupname"].toString(),
-                data["regtime"].toString(),
-            };
-            addTableRow(rowData);
+            QJsonArray data = json["data"].toArray();
+            for (int i=0; i<data.count(); i++) {
+                auto item = data.at(i);
+                QList<QString> rowData = {
+                    item["usertruename"].toString(),
+                    item["username"].toString(),
+                    item["groupname"].toString(),
+                    item["regtime"].toString(),
+                };
+                addTableRow(rowData);
+            }
         } else {
-            showError(json["msg"].toString() );
+            return showError(json["msg"].toString() );
         }
     } else {
-        showError(reply->errorString());
+        return showError(reply->errorString());
     }
 }
 

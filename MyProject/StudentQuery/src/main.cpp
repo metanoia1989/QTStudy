@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     Widget w;
     w.move(QApplication::screens().at(0)->geometry().center() - w.rect().center());
     w.show();
-    qDebug() << QString("测试日志输出").toStdWString();
+    a.setWindowIcon(QIcon(":/app.ico"));
     return a.exec();
 }
 
