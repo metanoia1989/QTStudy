@@ -37,7 +37,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
     tableWidget = new QTableWidget();
     tableWidget->setColumnCount(4);
-    tableWidget->setHorizontalHeaderLabels({ "姓名", "手机号", "班次", "注册事件" });
+    tableWidget->setHorizontalHeaderLabels({ "姓名", "手机号", "班次", "注册时间" });
     QFont font = QFont("微软雅黑", 12);
     font.setBold(true);
     tableWidget->horizontalHeader()->setFont(font);
