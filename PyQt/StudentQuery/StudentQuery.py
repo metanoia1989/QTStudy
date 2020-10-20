@@ -129,7 +129,7 @@ class StudentQuery(QWidget):
                 self.showError(json_arr["msg"])
         else: 
             print("Error occurred: ", error)
-            self.data_error_reply.emit(reply.errorString())
+            self.showError(reply.errorString())
         
     def showError(self, msg):
         self.queryBtn.setEnabled(True)
