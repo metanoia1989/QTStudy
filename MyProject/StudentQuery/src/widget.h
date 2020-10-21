@@ -24,7 +24,8 @@ protected:
 
 private:
     QString prevMobile;
-    QLineEdit *textInput;
+    QLineEdit *mobileInput;
+    QLineEdit *realnameInput;
     QPushButton *queryBtn;
     QTableWidget *tableWidget;
     QNetworkAccessManager *requestManager;

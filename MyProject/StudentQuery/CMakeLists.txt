@@ -11,12 +11,12 @@ add_executable(StudentQuery "")
 set_target_properties(StudentQuery PROPERTIES OUTPUT_NAME "StudentQuery")
 set_target_properties(StudentQuery PROPERTIES RUNTIME_OUTPUT_DIRECTORY "build/mingw/x86_64/release")
 target_include_directories(StudentQuery PRIVATE
-    D:/Program/Qt/5.15.0/mingw81_64/include/QtWidgets
-    D:/Program/Qt/5.15.0/mingw81_64/include/QtNetwork
-    D:/Program/Qt/5.15.0/mingw81_64/include/QtGui
-    D:/Program/Qt/5.15.0/mingw81_64/include/QtCore
-    D:/Program/Qt/5.15.0/mingw81_64/include
-    D:/Program/Qt/5.15.0/mingw81_64/mkspecs/win32-g++
+    D:/Program/Qt/5.15.1/mingw81_64/include/QtWidgets
+    D:/Program/Qt/5.15.1/mingw81_64/include/QtNetwork
+    D:/Program/Qt/5.15.1/mingw81_64/include/QtGui
+    D:/Program/Qt/5.15.1/mingw81_64/include/QtCore
+    D:/Program/Qt/5.15.1/mingw81_64/include
+    D:/Program/Qt/5.15.1/mingw81_64/mkspecs/win32-g++
 )
 target_compile_definitions(StudentQuery PRIVATE
     QT_NO_DEBUG
@@ -28,10 +28,10 @@ target_compile_definitions(StudentQuery PRIVATE
 )
 set_property(TARGET StudentQuery PROPERTY CXX_STANDARD 11)
 target_compile_options(StudentQuery PRIVATE
-    $<$<COMPILE_LANGUAGE:C>:-fPIC>
-    $<$<COMPILE_LANGUAGE:CXX>:-fPIC>
     $<$<COMPILE_LANGUAGE:C>:-m64>
     $<$<COMPILE_LANGUAGE:CXX>:-m64>
+    $<$<COMPILE_LANGUAGE:C>:-fPIC>
+    $<$<COMPILE_LANGUAGE:CXX>:-fPIC>
 )
 if(MSVC)
     target_compile_options(StudentQuery PRIVATE $<$<CONFIG:Release>:-Ox -fp:fast>)
@@ -49,16 +49,17 @@ target_link_libraries(StudentQuery PRIVATE
     mingw32
 )
 target_link_directories(StudentQuery PRIVATE
-    D:/Program/Qt/5.15.0/mingw81_64/lib
+    D:/Program/Qt/5.15.1/mingw81_64/lib
 )
 target_link_options(StudentQuery PRIVATE
-    -mwindows
     -m64
+    -mwindows
 )
 target_sources(StudentQuery PRIVATE
     src/main.cpp
     src/widget.cpp
     src/widget.h
     src/resource.qrc
+    src/app_win32.rc
 )
 

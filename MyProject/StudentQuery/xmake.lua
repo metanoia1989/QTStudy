@@ -11,6 +11,7 @@ target("StudentQuery")
     -- add files with Q_OBJECT meta (only for qt.moc)
     add_files("src/widget.h")
     add_files("src/resource.qrc")
+    add_files("src/app_win32.rc")
 
     -- add plugin: QSvgPlugin (optional)
     -- qt_add_static_plugins("QSvgPlugin", {linkdirs = "plugins/imageformats", links = {"qsvg", "Qt5Svg"}})

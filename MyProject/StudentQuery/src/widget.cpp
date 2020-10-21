@@ -29,10 +29,14 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
 
     auto hbox = new QHBoxLayout();
-    textInput = new QLineEdit();
+    mobileInput = new QLineEdit();
+    mobileInput->setPlaceholderText("请输入手机号");
+    realnameInput = new QLineEdit();
+    realnameInput->setPlaceholderText("请输入姓名");
     queryBtn = new QPushButton();
     queryBtn->setIcon(QIcon(":/search.png"));
-    hbox->addWidget(textInput);
+    hbox->addWidget(mobileInput);
+    hbox->addWidget(realnameInput);
     hbox->addWidget(queryBtn);
 
     tableWidget = new QTableWidget();
@@ -52,7 +56,8 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
     setLayout(vbox);
 
     connect(queryBtn, &QPushButton::released, this, &Widget::queryStudent);
-    connect(textInput, &QLineEdit::returnPressed, this, &Widget::queryStudent);
+    connect(mobileInput, &QLineEdit::returnPressed, this, &Widget::queryStudent);
+    connect(realnameInput, &QLineEdit::returnPressed, this, &Widget::queryStudent);
 }
 
 
@@ -88,14 +93,11 @@ void Widget::queryStudent()
         return;
     }
 
-    QString mobile = textInput->text().trimmed();
-    if (mobile.isEmpty()) {
-        return showError("手机号不能为空");
+    QString mobile = mobileInput->text().trimmed();
+    QString realname = realnameInput->text().trimmed();
+    if (mobile.isEmpty() && realname.isEmpty()) {
+        return showError("手机号和用户名不能同时为空");
     }
-    if (prevMobile == mobile) {
-        return showError("手机号没有变动");
-    }
-    prevMobile = mobile;
 
     tableWidget->setRowCount(0);
 
@@ -106,7 +108,8 @@ void Widget::queryStudent()
     QUrlQuery params; 
     params.addQueryItem("action", "student_info"); 
     params.addQueryItem("mobile", mobile); 
-    data.append(params.toString());
+    params.addQueryItem("realname", realname);
+    data.append(params.toString().toUtf8());
 
     connect(requestManager, &QNetworkAccessManager::finished, this, &Widget::handleResponse);
     requestManager->post(request, data);
@@ -117,6 +120,7 @@ void Widget::handleResponse(QNetworkReply *reply)
     auto error = reply->error();
     if (error == QNetworkReply::NoError) {
         QByteArray buffer = reply->readAll();
+        qDebug() << "响应数据为：" << buffer;
         if (buffer.isEmpty()) return;
         QJsonParseError jsonError;
         QJsonObject json = QJsonDocument::fromJson(buffer, &jsonError).object();
