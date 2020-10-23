@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/fonts">
+        <file>萌喵酱.ttf</file>
+    </qresource>
+</RCC>
