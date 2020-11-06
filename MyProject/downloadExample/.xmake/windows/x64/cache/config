@@ -1,9 +1,0 @@
-{
-    mtimes = {
-        ["xmake.lua"] = 1603375811
-    },
-    __version = "2.3.7",
-    options = {
-        plat = "mingw"
-    }
-}

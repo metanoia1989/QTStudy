@@ -76,3 +76,6 @@ Thumbs.db
 *.dll
 *.exe
 
+# xmake
+.xmake
+
