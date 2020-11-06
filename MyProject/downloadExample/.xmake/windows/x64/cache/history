@@ -1,0 +1,13 @@
+{
+    __version = "2.3.7",
+    cmdlines = {
+        "xmake build",
+        [[xmake lua D:\Program\xmake\actions\build\statistics.lua]],
+        "xmake build",
+        "xmake build -rv",
+        "xmake build -rv",
+        "xmake build -rv",
+        "xmake build -rv",
+        "xmake build -rv"
+    }
+}
