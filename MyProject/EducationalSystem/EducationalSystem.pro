@@ -11,10 +11,12 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    studentitemmodel.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    studentitemmodel.h
 
 FORMS += \
     mainwindow.ui
@@ -33,5 +35,6 @@ inis.path = $${OUT_PWD}/debug/
 inis.files += config.ini
 INSTALLS += inis
 
+DEFINES += QT_APP_DEBUG
 include(./third-party/QtNetworkService/QtNetworkService.pri)
 

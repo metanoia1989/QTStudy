@@ -2,10 +2,16 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+namespace AeaQt {
+    class HttpClient;
+};
+class StudentItemModel;
 
 class MainWindow : public QMainWindow
 {
@@ -16,15 +22,32 @@ public:
     ~MainWindow();
 
     void readSettings();
-    void showError(QString msg);
     void loadStudentData();
+    void initTableView();
+    void updateUIStatus();
+
+public slots:
+    void showError(QString msg);
+    void showStudentData(QByteArray data);
+
+private slots:
+    void on_refreshBtn_clicked();
+
+    void on_nextPageBtn_clicked();
+
+    void on_prePageBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
 
+    StudentItemModel *model;
+
+    AeaQt::HttpClient *httpClient;
     QString server_url; // 服务器地址
     QString keyword; // 搜索关键词
     int curr_page; // 当前页数
     int per_page; // 每页数量
+    int last_page; // 最大页数
+    bool loading; // 是否在加载
 };
 #endif // MAINWINDOW_H
