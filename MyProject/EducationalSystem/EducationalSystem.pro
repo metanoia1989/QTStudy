@@ -28,3 +28,10 @@ RESOURCES += \
     resource.qrc
 
 RC_FILE = app_win32.rc
+
+inis.path = $${OUT_PWD}/debug/
+inis.files += config.ini
+INSTALLS += inis
+
+include(./third-party/QtNetworkService/QtNetworkService.pri)
+
