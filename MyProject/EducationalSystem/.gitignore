@@ -71,3 +71,6 @@ Thumbs.db
 *.dll
 *.exe
 
+
+# 忽略文件
+!app_win32.rc
