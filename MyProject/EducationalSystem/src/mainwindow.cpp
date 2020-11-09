@@ -150,36 +150,35 @@ void MainWindow::showStudentData(QByteArray result)
 
     for (int i=0; i<studentList.count(); i++) {
         auto studentItem = studentList.at(i).toObject();
-        QStandardItem *completeItem = new QStandardItem;
-        if (studentItem["complete_material"].toInt() == 1) {
-            completeItem->setData("已收齐", Qt::DisplayRole);
-            completeItem->setData(QIcon(":/assets/icons/tick.png"), Qt::DecorationRole);
-        } else {
-            completeItem->setData("未收齐", Qt::DisplayRole);
-            completeItem->setData(QIcon(":/assets/icons/cross.png"), Qt::DecorationRole);
+
+        QList<QString> keys = {
+            "clazz_name", "lecturer_name", "assistant_name", "student_name",
+            "identity_card", "student_phone", "recruiter", "complete_material",
+            "data_sent", "paper_photo", "electronic_photo", "education",
+            "sfzfyj", "work_proof", "social_data", "graduation_status"
+        };
+
+        QList<QStandardItem*> rowData;
+        for(auto &key: keys) {
+            QStandardItem *item = new QStandardItem;
+            // 设置显示的内容
+            if (key == "complete_material") {
+                if (studentItem[key].toInt() == 1) {
+                    item->setData("已收齐", Qt::DisplayRole);
+                    item->setData(QIcon(":/assets/icons/tick.png"), Qt::DecorationRole);
+                } else {
+                    item->setData("未收齐", Qt::DisplayRole);
+                    item->setData(QIcon(":/assets/icons/cross.png"), Qt::DecorationRole);
+                }
+            } else {
+                item->setData(studentItem[key].toString(), Qt::DisplayRole);
+            }
+            // 设置自定义数据项
+            item->setData(studentItem["id"].toInt(), Qt::UserRole + 1); // 学员ID
+            item->setData(key, Qt::UserRole + 2); // 字段名称
+            rowData.append(item);
         }
 
-        QList<QStandardItem*> rowData = {
-            new QStandardItem(studentItem["clazz_name"].toString()),
-            new QStandardItem(studentItem["lecturer_name"].toString()), // 授课老师
-            new QStandardItem(studentItem["assistant_name"].toString()), // 助教
-            new QStandardItem(studentItem["student_name"].toString()),
-
-            new QStandardItem(studentItem["identity_card"].toString()),
-            new QStandardItem(studentItem["student_phone"].toString()),
-            new QStandardItem(studentItem["recruiter"].toString()),
-            completeItem,
-
-            new QStandardItem(studentItem["data_sent"].toString()),
-            new QStandardItem(studentItem["paper_photo"].toString()),
-            new QStandardItem(studentItem["electronic_photo"].toString()),
-            new QStandardItem(studentItem["education"].toString()),
-
-            new QStandardItem(studentItem["sfzfyj"].toString()),
-            new QStandardItem(studentItem["work_proof"].toString()),
-            new QStandardItem(studentItem["social_data"].toString()),
-            new QStandardItem(studentItem["graduation_status"].toString()),
-        };
         model->appendRow(rowData);
     }
     ui->studentsDataTable->resizeColumnsToContents();
