@@ -58,6 +58,8 @@ void MainWindow::initTableView()
     QFont font = QFont("微软雅黑", 12);
     font.setBold(true);
     ui->studentsDataTable->horizontalHeader()->setFont(font);
+
+    connect(model, &QAbstractItemModel::dataChanged, this, &MainWindow::cellDataChange);
 }
 
 /**
@@ -125,6 +127,7 @@ void MainWindow::loadStudentData()
         .header("content-type", "application/json")
         .queryParam("page_size",per_page)
         .queryParam("page_num", curr_page)
+        .queryParam("keyword", keyword)
         .onResponse(this, SLOT(showStudentData(QByteArray)))
         .onError(this, SLOT(showError(QString)))
         .timeout(10 * 1000) // 10s超时
@@ -165,10 +168,10 @@ void MainWindow::showStudentData(QByteArray result)
             if (key == "complete_material") {
                 if (studentItem[key].toInt() == 1) {
                     item->setData("已收齐", Qt::DisplayRole);
-                    item->setData(QIcon(":/assets/icons/tick.png"), Qt::DecorationRole);
+                    item->setData(QIcon(":/icons/tick.png"), Qt::DecorationRole);
                 } else {
                     item->setData("未收齐", Qt::DisplayRole);
-                    item->setData(QIcon(":/assets/icons/cross.png"), Qt::DecorationRole);
+                    item->setData(QIcon(":/icons/cross.png"), Qt::DecorationRole);
                 }
             } else {
                 item->setData(studentItem[key].toString(), Qt::DisplayRole);
@@ -184,6 +187,36 @@ void MainWindow::showStudentData(QByteArray result)
     ui->studentsDataTable->resizeColumnsToContents();
     ui->studentsDataTable->resizeRowsToContents();
     loading = false;
+}
+
+/**
+ * 单元格数据被修改
+ *
+ * @brief MainWindow::cellDataChange
+ * @param topLeft
+ * @param bottomRight
+ */
+void MainWindow::cellDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    Q_UNUSED(bottomRight);
+    QModelIndex index = model->index(topLeft.row(), topLeft.column());
+    QStandardItem *item = model->itemFromIndex(index);
+    int studentId = item->data(Qt::UserRole + 1).value<int>();
+    QString key = item->data(Qt::UserRole + 2).value<QString>();
+    QString value = item->data(Qt::DisplayRole).value<QString>();
+    qDebug() << QString("被修改的值为：%1# %2 -> %3").arg(studentId).arg(key).arg(value);
+    QString student_list_url = QString("%1/api/desktop/educational/%2").arg(server_url).arg(studentId);
+    QVariantMap data;
+    data.insert(key, value);
+    httpClient->put(student_list_url)
+        .header("content-type", "application/json")
+        .body(data)
+        .onResponse([](QByteArray result) {
+            qDebug() << result;
+        })
+        .onError(this, SLOT(showError(QString)))
+        .timeout(10 * 1000) // 10s超时
+        .exec();
 }
 
 
@@ -206,5 +239,29 @@ void MainWindow::on_prePageBtn_clicked()
     if (loading || curr_page <= 1)  return;
     curr_page--;
     updateUIStatus();
+    loadStudentData();
+}
+
+/**
+ * 用户按下回车键
+ * @brief MainWindow::on_lineEdit_returnPressed
+ */
+void MainWindow::on_lineEdit_returnPressed()
+{
+    if (loading) return;
+    loading = true;
+    keyword = ui->lineEdit->text().trimmed();
+    loadStudentData();
+}
+
+/**
+ * 点击搜索框
+ * @brief MainWindow::on_searchBtn_clicked
+ */
+void MainWindow::on_searchBtn_clicked()
+{
+    if (loading) return;
+    loading = true;
+    keyword = ui->lineEdit->text().trimmed();
     loadStudentData();
 }

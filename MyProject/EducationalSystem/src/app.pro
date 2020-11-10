@@ -13,15 +13,20 @@ CONFIG += c++11
 TEMPLATE = app
 
 SOURCES += \
+    logindialog.cpp \
     main.cpp \
     mainwindow.cpp \
-    studentitemmodel.cpp
+    studentitemmodel.cpp \
+    share/WizWin32Helper.cpp
 
 HEADERS += \
+    logindialog.h \
     mainwindow.h \
-    studentitemmodel.h
+    studentitemmodel.h \
+    share/WizWin32Helper.h
 
 FORMS += \
+    logindialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -30,12 +35,17 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    resource.qrc
+    ../assets/resource.qrc
 
-RC_FILE = app_win32.rc
+RC_FILE = ../assets/app_win32.rc
 
-inis.path = $${OUT_PWD}/debug/
-inis.files += config.ini
+CONFIG(release, debug|release) {
+    inis.path = $${OUT_PWD}/release/
+}
+CONFIG(debug, debug|release) {
+    inis.path = $${OUT_PWD}/debug/
+}
+inis.files += ../assets/config.ini
 INSTALLS += inis
 
 DEFINES += QT_APP_DEBUG

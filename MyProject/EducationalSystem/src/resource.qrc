@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>../assets/icons/app.ico</file>
-        <file>../assets/icons/search.png</file>
-        <file>../assets/icons/cross.png</file>
-        <file>../assets/icons/tick.png</file>
-        <file>../assets/icons/refresh.png</file>
-    </qresource>
-</RCC>

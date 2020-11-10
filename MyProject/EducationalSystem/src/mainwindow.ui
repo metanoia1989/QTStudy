@@ -19,12 +19,15 @@
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QPushButton" name="refreshBtn">
+        <property name="toolTip">
+         <string>刷新页面</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="resource.qrc">
-          <normaloff>:/assets/icons/refresh.png</normaloff>:/assets/icons/refresh.png</iconset>
+          <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -130,7 +133,7 @@
      <x>0</x>
      <y>0</y>
      <width>677</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

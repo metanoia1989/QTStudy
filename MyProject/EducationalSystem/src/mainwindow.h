@@ -29,13 +29,16 @@ public:
 public slots:
     void showError(QString msg);
     void showStudentData(QByteArray data);
+    void cellDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
 private slots:
     void on_refreshBtn_clicked();
-
     void on_nextPageBtn_clicked();
-
     void on_prePageBtn_clicked();
+
+    void on_lineEdit_returnPressed();
+
+    void on_searchBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
