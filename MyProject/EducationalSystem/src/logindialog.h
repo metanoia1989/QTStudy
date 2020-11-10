@@ -1,19 +1,22 @@
 #ifndef LOGINDIALOG_H
 #define LOGINDIALOG_H
 
-#include <QWidget>
+#include <QDialog>
 
 namespace Ui {
 class LoginDialog;
 }
 
-class LoginDialog : public QWidget
+class LoginDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit LoginDialog(QWidget *parent = nullptr);
+    explicit LoginDialog(QDialog *parent = nullptr);
     ~LoginDialog();
+
+private slots:
+    void on_btn_login_clicked();
 
 private:
     Ui::LoginDialog *ui;

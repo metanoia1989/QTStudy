@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "informationlist.h"
+#include "ui_informationlist.h"
 #include "studentitemmodel.h"
 #include <QSettings>
 #include <QMessageBox>
@@ -10,9 +10,9 @@
 #include <QJsonObject>
 #include <QTimer>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+InformationList::InformationList(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::InformationList)
     , curr_page(1)
     , per_page(100)
     , last_page(100)
@@ -27,19 +27,19 @@ MainWindow::MainWindow(QWidget *parent)
     // 读取服务器地址
     readSettings();
 
-    QTimer::singleShot(0, this, &MainWindow::loadStudentData);
+    QTimer::singleShot(0, this, &InformationList::loadStudentData);
 }
 
-MainWindow::~MainWindow()
+InformationList::~InformationList()
 {
     delete ui;
     delete httpClient;
 }
 
 /**
- * @brief MainWindow::initTableView
+ * @brief InformationList::initTableView
  */
-void MainWindow::initTableView()
+void InformationList::initTableView()
 {
     model = new StudentItemModel(this);
     model->setColumnCount(16);
@@ -59,15 +59,15 @@ void MainWindow::initTableView()
     font.setBold(true);
     ui->studentsDataTable->horizontalHeader()->setFont(font);
 
-    connect(model, &QAbstractItemModel::dataChanged, this, &MainWindow::cellDataChange);
+    connect(model, &QAbstractItemModel::dataChanged, this, &InformationList::cellDataChange);
 }
 
 /**
  * 更新UI显示情况
  *
- * @brief MainWindow::updateUIStatus
+ * @brief InformationList::updateUIStatus
  */
-void MainWindow::updateUIStatus()
+void InformationList::updateUIStatus()
 {
     if (per_page <= 1) {
         ui->prePageBtn->setDisabled(true);
@@ -83,9 +83,9 @@ void MainWindow::updateUIStatus()
 /**
  * 读取配置
  *
- * @brief MainWindow::readSettings
+ * @brief InformationList::readSettings
  */
-void MainWindow::readSettings()
+void InformationList::readSettings()
 {
     QString iniPath =  QCoreApplication::applicationDirPath() + "/config.ini";
     QSettings settings(iniPath, QSettings::IniFormat);
@@ -100,10 +100,10 @@ void MainWindow::readSettings()
 /**
  * 展示错误信息
  *
- * @brief MainWindow::showError
+ * @brief InformationList::showError
  * @param msg
  */
-void MainWindow::showError(QString msg)
+void InformationList::showError(QString msg)
 {
     auto msgBox = new QMessageBox(this);
     msgBox->setWindowTitle("请求出错");
@@ -117,9 +117,9 @@ void MainWindow::showError(QString msg)
 /**
  * 加载学员数据
  *
- * @brief MainWindow::loadStudentData
+ * @brief InformationList::loadStudentData
  */
-void MainWindow::loadStudentData()
+void InformationList::loadStudentData()
 {
     loading = true;
     QString student_list_url = server_url + "/api/desktop/educational";
@@ -135,7 +135,7 @@ void MainWindow::loadStudentData()
 }
 
 
-void MainWindow::showStudentData(QByteArray result)
+void InformationList::showStudentData(QByteArray result)
 {
     QJsonObject json = QJsonDocument::fromJson(result).object();
     if (json.isEmpty()) {
@@ -192,11 +192,11 @@ void MainWindow::showStudentData(QByteArray result)
 /**
  * 单元格数据被修改
  *
- * @brief MainWindow::cellDataChange
+ * @brief InformationList::cellDataChange
  * @param topLeft
  * @param bottomRight
  */
-void MainWindow::cellDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     Q_UNUSED(bottomRight);
     QModelIndex index = model->index(topLeft.row(), topLeft.column());
@@ -220,13 +220,13 @@ void MainWindow::cellDataChange(const QModelIndex &topLeft, const QModelIndex &b
 }
 
 
-void MainWindow::on_refreshBtn_clicked()
+void InformationList::on_refreshBtn_clicked()
 {
     if (loading)  return;
     loadStudentData();
 }
 
-void MainWindow::on_nextPageBtn_clicked()
+void InformationList::on_nextPageBtn_clicked()
 {
     if (loading || curr_page == last_page)  return;
     curr_page++;
@@ -234,7 +234,7 @@ void MainWindow::on_nextPageBtn_clicked()
     loadStudentData();
 }
 
-void MainWindow::on_prePageBtn_clicked()
+void InformationList::on_prePageBtn_clicked()
 {
     if (loading || curr_page <= 1)  return;
     curr_page--;
@@ -244,9 +244,9 @@ void MainWindow::on_prePageBtn_clicked()
 
 /**
  * 用户按下回车键
- * @brief MainWindow::on_lineEdit_returnPressed
+ * @brief InformationList::on_lineEdit_returnPressed
  */
-void MainWindow::on_lineEdit_returnPressed()
+void InformationList::on_lineEdit_returnPressed()
 {
     if (loading) return;
     loading = true;
@@ -256,9 +256,9 @@ void MainWindow::on_lineEdit_returnPressed()
 
 /**
  * 点击搜索框
- * @brief MainWindow::on_searchBtn_clicked
+ * @brief InformationList::on_searchBtn_clicked
  */
-void MainWindow::on_searchBtn_clicked()
+void InformationList::on_searchBtn_clicked()
 {
     if (loading) return;
     loading = true;

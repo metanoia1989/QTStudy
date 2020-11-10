@@ -1,4 +1,5 @@
-#include "mainwindow.h"
+#include "informationlist.h"
+#include "logindialog.h"
 #include "share/WizWin32Helper.h"
 #include <QApplication>
 #include <QStyleFactory>
@@ -27,7 +28,16 @@ int main(int argc, char *argv[])
                      background-color: #F8F8F8; \
                      border:0px;}");
 
-    MainWindow w;
+    bool bFallback = true;
+
+    if (bFallback) {
+        LoginDialog loginDialog;
+        if (loginDialog.exec() != QDialog::Accepted)
+            return 0;
+    }
+
+    InformationList w;
     w.show();
+
     return app.exec();
 }

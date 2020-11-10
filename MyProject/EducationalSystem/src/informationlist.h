@@ -1,11 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui { class InformationList; }
 QT_END_NAMESPACE
 
 namespace AeaQt {
@@ -13,13 +13,13 @@ namespace AeaQt {
 };
 class StudentItemModel;
 
-class MainWindow : public QMainWindow
+class InformationList : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    InformationList(QWidget *parent = nullptr);
+    ~InformationList();
 
     void readSettings();
     void loadStudentData();
@@ -41,7 +41,7 @@ private slots:
     void on_searchBtn_clicked();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::InformationList *ui;
 
     StudentItemModel *model;
 

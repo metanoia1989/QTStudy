@@ -15,19 +15,19 @@ TEMPLATE = app
 SOURCES += \
     logindialog.cpp \
     main.cpp \
-    mainwindow.cpp \
+    informationlist.cpp \
     studentitemmodel.cpp \
     share/WizWin32Helper.cpp
 
 HEADERS += \
     logindialog.h \
-    mainwindow.h \
+    informationlist.h \
     studentitemmodel.h \
     share/WizWin32Helper.h
 
 FORMS += \
     logindialog.ui \
-    mainwindow.ui
+    informationlist.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
