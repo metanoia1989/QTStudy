@@ -1,6 +1,7 @@
 
 QT       += core gui
 QT       += network
+QT       += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,13 +18,19 @@ SOURCES += \
     main.cpp \
     informationlist.cpp \
     studentitemmodel.cpp \
-    share/WizWin32Helper.cpp
+    utils/global.cpp \
+    utils/WizWin32Helper.cpp \
+    utils/cache.cpp \
+    utils/sqlite.cpp
 
 HEADERS += \
     logindialog.h \
     informationlist.h \
     studentitemmodel.h \
-    share/WizWin32Helper.h
+    utils/global.h \
+    utils/WizWin32Helper.h \
+    utils/cache.h \
+    utils/sqlite.h
 
 FORMS += \
     logindialog.ui \
