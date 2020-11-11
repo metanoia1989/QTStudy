@@ -38,16 +38,15 @@ int main(int argc, char *argv[])
     bool bFallback = true;
 
 
-//    ESUserSettings userSettings(strAccountFolderName);
 
-//    bool bAutoLogin = userSettings.autoLogin();
-//    QString strPassword = userSettings.password();
-//    QString strUsername = userSettings.username();
+    bool bAutoLogin = cache->getItem("autoLogin").toInt();
+    QString strUsername = cache->getItem("username");
+    QString strPassword = cache->getItem("password");
 
-//    if (bAutoLogin && !strPassword.isEmpty()) {
-//        // 当勾选自动登录且密码不为空时，自动登录
-//        bFallback = false;
-//    }
+    if (bAutoLogin && !strUsername.isEmpty() && !strPassword.isEmpty()) {
+        // 当勾选自动登录且密码不为空时，自动登录
+        bFallback = false;
+    }
 
     // 手动登录
     if (bFallback) {
@@ -56,19 +55,9 @@ int main(int argc, char *argv[])
             return 0;
     }
     
-    // 登录数据库管理
-//    WizDatabaseManager dbMgr(strAccountFolderName);
-//    if (!dbMgr.openAll()) {
-//        QMessageBox::critical(NULL, "", QObject::tr("Can not open database"));
-//        return 0;
-//    }
-
 //    qDebug() << "set user id for token ; " << strUsername;
 //    ESToken::setUsername(strUsername);
 //    ESToken::setPasswd(strPassword);
-
-//    dbMgr.db().setPassword(strPassword);
-//    dbMgr.db().updateInvalidData();
      
 
     InformationList w;

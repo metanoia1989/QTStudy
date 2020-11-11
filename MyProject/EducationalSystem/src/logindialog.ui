@@ -175,7 +175,7 @@
 background-color: #448aff;
 color: white;
 font-size: 16px;
-letter-spacing: 4px;</string>
+</string>
       </property>
       <property name="text">
        <string>登录</string>

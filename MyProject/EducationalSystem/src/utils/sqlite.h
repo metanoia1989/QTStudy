@@ -25,9 +25,10 @@ public:
     QSqlQuery queryRecByTime(QString, QString);
     QSqlQuery queryRecord(QString, QString );
     long queryCount(QString);
-    bool insertRecord(QString, QString);
+    bool insertRecord(QString, QString, QString);
     bool updateRecord(QString, QString);
     bool delRecord(QString, QString);
+    bool delRecord(QString, QString, QString);
     bool clearTable(QString);
 private:
     QSqlDatabase db;

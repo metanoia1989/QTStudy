@@ -18,7 +18,7 @@ public:
 
 private:
     Sqlite *m_db;
-
+    QString m_tablename;
 };
 
 #endif // CACHE_H

@@ -65,7 +65,9 @@ bool Sqlite::createTable(QString tb_name, QString columns)
     if(columns.isNull() || columns.isEmpty()){
         columns = "attribute varchar,type varchar,nation varchar";
     }
-    bool success=query.exec(QString("create table %1 (id varchar primary key,%2, time datetime)").arg(tb_name).arg(columns));
+    QString sql = QString("create table %1 (id integer primary key autoincrement,%2, time datetime)")
+            .arg(tb_name).arg(columns);
+    bool success=query.exec(sql);
     if(success){
         qDebug()<<QObject::tr("数据库表创建成功！\n");
         return true;
@@ -193,7 +195,9 @@ QSqlQuery Sqlite::queryRecord(QString tb_name, QString attribute)
         attribute = "id;001";
     }
     QStringList parts = attribute.split(";");
-    query.prepare(QString("select * from %1 where %2=%3 order by time desc").arg(tb_name).arg(parts[0]).arg(parts[1]));
+    QString sql = QString("select * from %1 where %2=%3 order by time desc").arg(tb_name).arg(parts[0]).arg(parts[1]);
+    qDebug() << "查询SQL语句：" << sql;
+    query.prepare(sql);
     success=query.exec();
     if(!success)
     {
@@ -242,11 +246,12 @@ long Sqlite::queryCount(QString tb_name)
 /**
  * @brief Sqlite::insertRecord,插入记录
  * @param tb_name,数据表名
- * @param columns,插入字符串,格式(字段值,字段值),注意id自动生成无需包含,例:"001,abc"
+ * @param keys,插入键,格式(字段名,字段名),例:"key, value"
+ * @param columns,插入字符串,格式('字段值','字段值'), 例:"'abc','123'"
  * @return true/false
  * @author silen
  */
-bool Sqlite::insertRecord(QString tb_name, QString columns)
+bool Sqlite::insertRecord(QString tb_name, QString keys, QString columns)
 {
     //插入记录
     QSqlQuery query;
@@ -260,21 +265,11 @@ bool Sqlite::insertRecord(QString tb_name, QString columns)
         columns = "属性,类型,100";
     }
 
-    QString time_str = QDateTime::currentDateTime().toString("yyMMddHHmmssmmm");
     QStringList parts = columns.split(",");
-    QString sql = "insert into "+tb_name+" values (";
-    sql.append("'"+time_str+"'"+",");
-    for(int i=0;i<parts.size();i++){
-
-        sql.append("'"+parts[i]+"',");
-//        if(i<parts.size()-1)
-//            sql.append(",");
-    }
     QString time=QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-
-    sql.append("'"+time+"')");
+    QString sql = QString("insert into %1 (%2, time) values (%3, '%4')")
+            .arg(tb_name).arg(keys).arg(columns).arg(time);
     query.prepare(sql);
-
     success=query.exec();
     if(!success)
     {
@@ -342,8 +337,40 @@ bool Sqlite::delRecord(QString tb_name,QString id)
     if(id.isNull() || id.isEmpty()){
         id = "001";
     }
-    query.prepare(QString("delete from %1"
-                              " where id=%2").arg(tb_name).arg(id));
+    query.prepare(QString("delete from %1 where id=%2").arg(tb_name).arg(id));
+    success=query.exec();
+    if(!success)
+    {
+        QSqlError lastError=query.lastError();
+        qDebug()<<lastError.driverText()<<QString(QObject::tr("删除失败"));
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Sqlite::delRecord,根据字段值删除记录
+ * @param tb_name,数据表名
+ * @param field,字段关键字
+ * @param value,字段值
+ * @return true/false
+ * @author silen
+ */
+bool Sqlite::delRecord(QString tb_name,QString field, QString value)
+{
+    //删除
+    QSqlQuery query;
+    t.restart();
+    if(tb_name.isNull() || tb_name.isEmpty()){
+        tb_name = "test_table";
+    }
+    if(field.isNull() || value.isEmpty()){
+        return false;
+    }
+    QString sql = QString("delete from %1 where %2='%3'")
+            .arg(tb_name).arg(field).arg(value);
+    query.prepare(sql);
     success=query.exec();
     if(!success)
     {
