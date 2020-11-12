@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QDateTime>
 
-struct ESUSERINFO;
+struct USERINFO;
+class TokenPrivate;
 
 class Token : public QObject
 {
@@ -13,6 +14,7 @@ class Token : public QObject
 public:
     static Token* instance();
 
+    Token();
     Token(const QString& strUsername, const QString& strPasswd);
     ~Token();
 
@@ -21,25 +23,17 @@ public:
     static void requestToken(); // async
     static void clearToken(); // 注销登录时清除
     static void clearLastError();
-    static void setUserId(const QString& strUserId);
+    static void setUsername(const QString& strUsername);
     static void setPasswd(const QString& strPasswd);
 
     static QString lastErrorMessage();
     static int lastErrorCode();
     static bool lastIsNetworkError();
 
-Q_SIGNALS:
+signals:
     void tokenAcquired(QString strToken);
 
-private:
-    USERINFO m_info;
-    QString m_strUsername;
-    QString m_strPasswd;
-    bool m_bProcessing;
-    QMutex* m_mutex;
-    int m_lastErrorCode;
-    QString m_lastErrorMessage;
-    bool m_bLastIsNetworkError;
+    friend class TokenPrivate;
 };
 
 

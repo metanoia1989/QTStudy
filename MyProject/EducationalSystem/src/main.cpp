@@ -1,12 +1,15 @@
+#include <QApplication>
+#include <QStyleFactory>
+#include <QDebug>
+#include <QObject>
+#include <QThread>
 #include "informationlist.h"
 #include "logindialog.h"
 #include "utils/WizWin32Helper.h"
 #include "utils/sqlite.h"
 #include "utils/cache.h"
 #include "utils/global.h"
-#include <QApplication>
-#include <QStyleFactory>
-#include <QDebug>
+#include "utils/token.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,7 +33,6 @@ int main(int argc, char *argv[])
                      background-color: #F8F8F8; \
                      border:0px;}");
 
-
     Sqlite *sqlite = new Sqlite("sqlite.db");
     Cache *cache = new Cache(sqlite);
     Global::setCache(cache);
@@ -48,18 +50,22 @@ int main(int argc, char *argv[])
         bFallback = false;
     }
 
+    Token token;
+
     // 手动登录
     if (bFallback) {
         LoginDialog loginDialog;
         if (loginDialog.exec() != QDialog::Accepted)
             return 0;
+    } else {
+        Token::setUsername(strUsername);
+        Token::setPasswd(strPassword);
+        qDebug() << "开始发起登录请求";
+        QString strToken = Token::token();
+        qDebug() << "token为：" << strToken;
+        cache->setItem("token", strToken);
     }
     
-//    qDebug() << "set user id for token ; " << strUsername;
-//    ESToken::setUsername(strUsername);
-//    ESToken::setPasswd(strPassword);
-     
-
     InformationList w;
     w.show();
 

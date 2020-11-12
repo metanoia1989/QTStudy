@@ -1,14 +1,23 @@
-﻿#include "Token.h"
-#include "Global.h"
+﻿#include "token.h"
+#include "token_p.h"
+#include "global.h"
+#include "threads.h"
 
 #include <QMutexLocker>
 #include <QString>
 #include <QDebug>
+#include <QUrlQuery>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QEventLoop>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 TokenPrivate::TokenPrivate(Token* token)
     : m_bProcessing(false)
-    , m_bLastIsNetworkError(false)
     , m_mutex(new QMutex(QMutex::Recursive))
+    , m_bLastIsNetworkError(false)
     , q(token)
 
 {
@@ -26,54 +35,43 @@ QString TokenPrivate::token()
     //
     if (m_info.strToken.isEmpty())
     {
-        KMAccountsServer asServer;
-        if (asServer.login(m_strUserId, m_strPasswd))
-        {
-            m_info = asServer.getUserInfo();
-            m_info.tTokenExpried = QDateTime::currentDateTime().addSecs(TOKEN_TIMEOUT_INTERVAL);
-            return m_info.strToken;
-        }
-        else
-        {
-            m_lastErrorCode = asServer.getLastErrorCode();
-            m_lastErrorMessage = asServer.getLastErrorMessage();
-            m_bLastIsNetworkError = asServer.isNetworkError();
-            return QString();
-        }
-    }
-    //
-    if (m_info.tTokenExpried >= QDateTime::currentDateTime())
-    {
-        return m_info.strToken;
-    }
-    else
-    {
-        WIZUSERINFO info = m_info;
-        KMAccountsServer asServer;
-        asServer.setUserInfo(info);
+        QString url = getServerUrl() + "/api/desktop/auth/login";
+        qDebug() << "请球URL：" << url;
+        QEventLoop loop;
+        QNetworkAccessManager mgr;
+        QNetworkRequest request;
+        request.setUrl(QUrl(url));
+//        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/w-www-from-urlencode");
 
-        if (asServer.keepAlive())
-        {
-            m_info.tTokenExpried = QDateTime::currentDateTime().addSecs(TOKEN_TIMEOUT_INTERVAL);
-            return m_info.strToken;
-        }
-        else
-        {
-            QString strToken;
-            if (asServer.getToken(m_strUserId, m_strPasswd, strToken))
-            {
-                m_info.strToken = strToken;
-                m_info.tTokenExpried = QDateTime::currentDateTime().addSecs(TOKEN_TIMEOUT_INTERVAL);
+        QByteArray data;
+        QUrlQuery params;
+        params.addQueryItem("username", m_strUsername);
+        params.addQueryItem("password", m_strPasswd);
+        data.append(params.toString().toUtf8());
+        qDebug() << "请求数据：" << data;
+        QNetworkReply *reply = mgr.post(request, data);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+        if (reply->error() == QNetworkReply::NoError) {
+            QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
+            qDebug() << "请求成功：" << json;
+            if (json["code"].toInt() == 0) {
+                m_info = USERINFO();
+                m_info.strUsername = m_strUsername;
+                m_info.strToken = json["data"].toObject()["token"].toString();
+                int expireIn =   json["data"].toObject()["expire_in"].toInt();
+                m_info.tTokenExpried = QDateTime::currentDateTime().addSecs(expireIn * 60);
                 return m_info.strToken;
             }
-            else
-            {
-                m_lastErrorCode = asServer.getLastErrorCode();
-                m_lastErrorMessage = asServer.getLastErrorMessage();
-                m_bLastIsNetworkError = asServer.isNetworkError();
-                return QString();
-            }
+            m_lastErrorMessage = json["msg"].toString();
+        } else {
+            m_lastErrorMessage = reply->errorString();
         }
+        m_lastErrorCode = -1;
+        m_bLastIsNetworkError = true;
+        qDebug() << "请求出错" << m_lastErrorMessage;
+        return QString();
+
     }
 
     Q_ASSERT(0);
@@ -104,7 +102,7 @@ void TokenPrivate::requestToken()
             Q_EMIT m_p->q->tokenAcquired(token);
         }
     };
-    ExecuteOnThread(WIZ_THREAD_NETWORK, [=](){
+    ExecuteOnThread(THREAD_NETWORK, [=](){
         GetTokenRunnable runnable(this);
         runnable.run();
     });
@@ -121,9 +119,9 @@ void TokenPrivate::clearLastError()
     m_lastErrorMessage.clear();
 }
 
-void TokenPrivate::setUserId(const QString& strUserId)
+void TokenPrivate::setUsername(const QString& strUsername)
 {
-    m_strUserId = strUserId;
+    m_strUsername = strUsername;
 }
 
 void TokenPrivate::setPasswd(const QString& strPasswd)
@@ -131,12 +129,12 @@ void TokenPrivate::setPasswd(const QString& strPasswd)
     m_strPasswd = strPasswd;
 }
 
-WIZUSERINFO TokenPrivate::userInfo()
+USERINFO TokenPrivate::userInfo()
 {
     QMutexLocker locker(m_mutex);
     Q_UNUSED(locker);
     //
-    WIZUSERINFO ret = m_info;
+    USERINFO ret = m_info;
     return ret;
 }
 
@@ -165,22 +163,28 @@ bool TokenPrivate::lastIsNetworkError() const
 }
 
 // 创建两个对象的指针
-static TokenPrivate* d = 0;
-static Token* m_instance = 0;
+static TokenPrivate* d = nullptr;
+static Token* m_instance = nullptr;
 
-Token::Token(const QString& strUserId, const QString& strPasswd)
+Token::Token()
+{
+    m_instance = this;
+    d = new TokenPrivate(this);
+}
+
+Token::Token(const QString& strUsername, const QString& strPasswd)
 {
     m_instance = this;
     d = new TokenPrivate(this);
 
-    d->setUserId(strUserId);
+    d->setUsername(strUsername);
     d->setPasswd(strPasswd);
 }
 
 Token::~Token()
 {
     delete d;
-    d = 0;
+    d = nullptr;
 }
 
 Token* Token::instance()
@@ -211,11 +215,11 @@ void Token::clearLastError()
     d->clearLastError();
 }
 
-void Token::setUserId(const QString& strUserId)
+void Token::setUsername(const QString& strUsername)
 {
     Q_ASSERT(m_instance);
 
-    d->setUserId(strUserId);
+    d->setUsername(strUsername);
 }
 
 void Token::setPasswd(const QString& strPasswd)
@@ -225,7 +229,7 @@ void Token::setPasswd(const QString& strPasswd)
     d->setPasswd(strPasswd);
 }
 
-WIZUSERINFO Token::userInfo()
+USERINFO Token::userInfo()
 {
     Q_ASSERT(m_instance);
 

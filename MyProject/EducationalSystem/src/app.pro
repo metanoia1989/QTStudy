@@ -21,7 +21,9 @@ SOURCES += \
     utils/global.cpp \
     utils/WizWin32Helper.cpp \
     utils/cache.cpp \
-    utils/sqlite.cpp
+    utils/sqlite.cpp \
+    utils/threads.cpp \
+    utils/token.cpp
 
 HEADERS += \
     logindialog.h \
@@ -30,7 +32,11 @@ HEADERS += \
     utils/global.h \
     utils/WizWin32Helper.h \
     utils/cache.h \
-    utils/sqlite.h
+    utils/sqlite.h \
+    utils/threads.h \
+    utils/threads_p.h \
+    utils/token_p.h \
+    utils/token.h
 
 FORMS += \
     logindialog.ui \

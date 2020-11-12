@@ -1,14 +1,16 @@
 #include "informationlist.h"
 #include "ui_informationlist.h"
 #include "studentitemmodel.h"
-#include <QSettings>
+#include "utils/global.h"
+#include "utils/cache.h"
+#include "HttpClient.h"
 #include <QMessageBox>
 #include <QDebug>
-#include "HttpClient.h"
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QTimer>
+#include <QProcess>
 
 InformationList::InformationList(QWidget *parent)
     : QWidget(parent)
@@ -77,7 +79,9 @@ void InformationList::updateUIStatus()
         ui->prePageBtn->setDisabled(false);
         ui->nextPageBtn->setDisabled(false);
     }
-    ui->currentPageSpin->setValue(curr_page);
+    ui->currentPageLabel->setText(QString("第%1页").arg(curr_page));
+    ui->sumPageLabel->setText(QString("共%1页").arg(last_page));
+    ui->cb_pageSize->setCurrentText(QString::number(per_page));
 }
 
 /**
@@ -87,14 +91,10 @@ void InformationList::updateUIStatus()
  */
 void InformationList::readSettings()
 {
-    QString iniPath =  QCoreApplication::applicationDirPath() + "/config.ini";
-    QSettings settings(iniPath, QSettings::IniFormat);
-    settings.beginGroup("Site");
-    server_url = settings.value("educational_site").toString();
+    server_url = getServerUrl();
     if (server_url.isEmpty()) {
         showError(tr("读取教务系统地址失败，请检查配置文件！"));
     }
-    settings.endGroup();
 }
 
 /**
@@ -123,8 +123,10 @@ void InformationList::loadStudentData()
 {
     loading = true;
     QString student_list_url = server_url + "/api/desktop/educational";
+    QString token = Global::cache()->getItem("token");
     httpClient->get(student_list_url)
         .header("content-type", "application/json")
+        .header("authorization", QString("Bearer %1").arg(token))
         .queryParam("page_size",per_page)
         .queryParam("page_num", curr_page)
         .queryParam("keyword", keyword)
@@ -264,4 +266,22 @@ void InformationList::on_searchBtn_clicked()
     loading = true;
     keyword = ui->lineEdit->text().trimmed();
     loadStudentData();
+}
+
+void InformationList::on_refreshBtn_2_clicked()
+{
+    Global::cache()->setItem("autoLogin", "0");
+    qApp->closeAllWindows();
+    QProcess::startDetached(qApp->applicationFilePath(), QStringList());
+}
+
+void InformationList::on_cb_pageSize_currentIndexChanged(const QString &arg1)
+{
+    int num = arg1.toInt();
+    if (num == per_page || loading) {
+        return;
+    }
+    per_page = num;
+    loadStudentData();
+    updateUIStatus();
 }

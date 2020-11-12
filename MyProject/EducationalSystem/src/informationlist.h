@@ -40,6 +40,10 @@ private slots:
 
     void on_searchBtn_clicked();
 
+    void on_refreshBtn_2_clicked();
+
+    void on_cb_pageSize_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::InformationList *ui;
 

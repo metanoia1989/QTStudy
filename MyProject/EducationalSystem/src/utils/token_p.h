@@ -2,16 +2,13 @@
 #define SERVICE_TOKEN_P_H
 
 #include <QObject>
+#include "global.h"
 
 class QString;
 class QDateTime;
 class QMutex;
 
-struct USERINFO;
-
 class Token;
-class AsyncApi;
-
 
 class TokenPrivate: QObject
 {
@@ -25,7 +22,7 @@ public:
     void requestToken();
     void clearToken();
     void clearLastError();
-    void setUserId(const QString& strUserId);
+    void setUsername(const QString& strUsername);
     void setPasswd(const QString& strPasswd);
     USERINFO userInfo();
 
@@ -35,7 +32,7 @@ public:
 
 private:
     USERINFO m_info;
-    QString m_strUserId;
+    QString m_strUsername;
     QString m_strPasswd;
     bool m_bProcessing;
     QMutex* m_mutex;
@@ -45,6 +42,7 @@ private:
 
     Token* q;
 };
+
 
 
 #endif // SERVICE_TOKEN_P_H

@@ -255,8 +255,6 @@ bool Sqlite::insertRecord(QString tb_name, QString keys, QString columns)
 {
     //插入记录
     QSqlQuery query;
-    QTime t;
-    t.restart();
 
     if(tb_name.isNull() || tb_name.isEmpty()){
         tb_name = "test_table";
