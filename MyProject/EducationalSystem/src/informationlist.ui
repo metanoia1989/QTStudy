@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>716</width>
-    <height>428</height>
+    <width>822</width>
+    <height>465</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="refreshBtn_2">
+      <widget class="QPushButton" name="logoutBtn">
        <property name="toolTip">
         <string>刷新页面</string>
        </property>
@@ -76,13 +76,34 @@
       </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_clazz"/>
+      <widget class="QComboBox" name="cbx_clazz">
+       <property name="minimumSize">
+        <size>
+         <width>75</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_recruiter"/>
+      <widget class="QComboBox" name="cbx_recruiter">
+       <property name="minimumSize">
+        <size>
+         <width>90</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_lecturer"/>
+      <widget class="QComboBox" name="cbx_lecturer">
+       <property name="minimumSize">
+        <size>
+         <width>90</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_4">
@@ -156,7 +177,7 @@
        <item>
         <widget class="QComboBox" name="cb_pageSize">
          <property name="currentText">
-          <string>100</string>
+          <string>50</string>
          </property>
          <item>
           <property name="text">

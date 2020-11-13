@@ -1,6 +1,7 @@
 #include "global.h"
 #include <QCoreApplication>
 #include <QLocale>
+#include <QMessageBox>
 
 //****************************************************
 // 日期助手类
@@ -177,4 +178,14 @@ QString getServerUrl()
     }
     settings.endGroup();
     return server_url;
+}
+
+void showErrorMsg(QString msg)
+{
+    auto msgBox = new QMessageBox();
+    msgBox->setWindowTitle("请求出错");
+    msgBox->setIcon(QMessageBox::Critical);
+    msgBox->setText(msg);
+    msgBox->exec();
+    msgBox->deleteLater();
 }

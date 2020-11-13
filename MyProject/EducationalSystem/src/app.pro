@@ -14,6 +14,7 @@ CONFIG += c++11
 TEMPLATE = app
 
 SOURCES += \
+    delegate/certificatedelegate.cpp \
     logindialog.cpp \
     main.cpp \
     informationlist.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     utils/token.cpp
 
 HEADERS += \
+    delegate/certificatedelegate.h \
     logindialog.h \
     informationlist.h \
     studentitemmodel.h \

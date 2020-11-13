@@ -80,5 +80,9 @@ public:
  */
 QString getServerUrl();
 
+/**
+ * @brief 展示错误信息
+ */
+void showErrorMsg();
 
 #endif // GLOBAL_H
