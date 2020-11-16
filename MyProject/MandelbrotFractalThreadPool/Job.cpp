@@ -42,6 +42,31 @@ void Job::run()
     emit jobCompleted(jobResult);
 }
 
+void Job::setPixelPositionY(int value)
+{
+    mPixelPositionY = value;
+}
+
+void Job::setMoveOffset(const QPointF &value)
+{
+    mMoveOffset = value;
+}
+
+void Job::setScaleFactor(double value)
+{
+    mScaleFactor = value;
+}
+
+void Job::setAreaSize(const QSize &value)
+{
+    mAreaSize = value;
+}
+
+void Job::setIterationMax(int value)
+{
+    mIterationMax = value;
+}
+
 void Job::abort()
 {
     mAbort.storeRelaxed(true);

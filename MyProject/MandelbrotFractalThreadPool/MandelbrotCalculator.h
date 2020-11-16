@@ -38,7 +38,7 @@ private:
     double mScaleFactor;
     QSize mAreaSize;
     int mIterationMax;
-    int mReceivedJobResult; // 接收JobResult的计数
+    int mReceivedJobResults; // 接收JobResult的计数
     QList<JobResult> mJobResults; // 存储JobResult的容器
     QElapsedTimer mTimer; // 计算运行所有作业的时间
 

@@ -6,7 +6,7 @@
 #include <QSize>
 #include <QAtomicInteger>
 
-class JobResult;
+#include "JobResult.h"
 
 class Job : public QObject, public QRunnable
 {
