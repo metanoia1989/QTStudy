@@ -87,9 +87,11 @@ private:
     int last_page; // 最大页数
     bool loading; // 是否在加载
 
-    int selectedId = 0; // 被选择的学员ID
     QMenu *menu; // 右键菜单
     QMenu *batchMenu; // 批量处理菜单
     CheckboxHeader *header; // 自定义表格头部
+
+    QString remark = ""; // 资料收齐备注
+    int selectedId = 0; // 被选择的学员ID
 };
 #endif // MAINWINDOW_H

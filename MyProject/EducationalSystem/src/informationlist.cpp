@@ -19,6 +19,7 @@
 #include <QAction>
 #include <QPoint>
 #include <QStyle>
+#include <QInputDialog>
 
 InformationList::InformationList(QWidget *parent)
     : QWidget(parent)
@@ -136,7 +137,12 @@ void InformationList::initTableView()
         materialProcessBatch("setMaterialComplete");
     });
     connect(remarkBatAct, &QAction::triggered, [this](){
-        materialProcessBatch("setMaterialRemark");
+        bool ok;
+        QString text = QInputDialog::getText(this, "批量更新资料收齐备注", "资料收齐备注内容", QLineEdit::Normal, "", &ok);
+        if (ok) {
+            remark = text;
+            materialProcessBatch("setMaterialRemark");
+        }
     });
 }
 
@@ -565,12 +571,17 @@ void InformationList::materialProcessBatch(QString type)
     qDebug() << "发起请求：" << url;
     QVariantMap data;
     data.insert("student_id", ids);
+    if (type == "setMaterialRemark") {
+        data.insert("remark", remark);
+    }
+
     httpClient->post(url.arg(type))
         .header("content-type", "application/json")
         .header("authorization", QString("Bearer %1").arg(token))
         .body(data)
         .onResponse([this, type](QByteArray result){
             loading = false;
+            remark = "";
             QJsonObject json = QJsonDocument::fromJson(result).object();
             if (json.isEmpty()) {
                 return showError("服务器响应为空！");
@@ -586,7 +597,7 @@ void InformationList::materialProcessBatch(QString type)
         })
         .onError([this](QString errorStr){
             loading = false;
-            selectedId = 0;
+            remark = "";
             showError(errorStr);
         })
         .timeout(10 * 1000) // 10s超时
