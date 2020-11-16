@@ -74,8 +74,6 @@ void InformationList::initTableView()
     ui->studentsDataTable->setAlternatingRowColors(true);
     ui->studentsDataTable->setStyleSheet("QTableView{background-color: #fff;"
     "alternate-background-color: #f3f3f3;}");
-//    ui->studentsDataTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-//    ui->studentsDataTable->setSelectionMode(QAbstractItemView::MultiSelection);
     ui->studentsDataTable->setItemDelegateForColumn(17, new CertificateDelegate(this));
 
     QFont font = QFont("微软雅黑", 12);
@@ -119,6 +117,27 @@ void InformationList::initTableView()
     });
     connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
                 this, &InformationList::ProvideContextMenu);
+
+    // 设置批处理的右键菜单
+    batchMenu = new QMenu(this);
+    QAction *approvalBatAct = new QAction("批量申请资料收齐");
+    QAction *certBatAct = new QAction("批量申请结业证书已寄");
+    QAction *collectionBatAct = new QAction("批量设置资料字段已收齐");
+    QAction *remarkBatAct = new QAction("批量更新资料收齐备注");
+    batchMenu->addActions({ approvalBatAct, certBatAct, collectionBatAct, remarkBatAct});
+    ui->batchBtn->setMenu(batchMenu);
+    connect(approvalBatAct, &QAction::triggered, [this](){
+        materialProcessBatch("sponsorMaterialComplete");
+    });
+    connect(certBatAct, &QAction::triggered, [this](){
+        materialProcessBatch("sponsorCertSend");
+    });
+    connect(collectionBatAct, &QAction::triggered, [this](){
+        materialProcessBatch("setMaterialComplete");
+    });
+    connect(remarkBatAct, &QAction::triggered, [this](){
+        materialProcessBatch("setMaterialRemark");
+    });
 }
 
 /**
@@ -217,6 +236,23 @@ void InformationList::loadFilterData()
     });
     connect(this, &InformationList::filterDataLoaded, this, &InformationList::showFilterData, Qt::QueuedConnection);
     connect(this, &InformationList::requestShowError, this, &InformationList::showError, Qt::QueuedConnection);
+}
+
+/**
+ * @brief 获取选中的学员ID
+ * @return QList<int>
+ */
+QList<int> InformationList::getSelectedIds()
+{
+    QList<int> ids;
+    for (int i = 0; i < model->rowCount(); i++) {
+        auto item = model->item(i, 0);
+        if (item->checkState() == Qt::Checked) {
+            int studentId = item->data(Qt::UserRole + 1).value<int>();
+            ids.push_back(studentId);
+        }
+    }
+    return ids;
 }
 
 /**
@@ -494,7 +530,67 @@ void InformationList::materialProcessRequest(QString type)
             showError(errorStr);
         })
         .timeout(10 * 1000) // 10s超时
-        .exec();
+            .exec();
+}
+
+/**
+ * @brief 批处理资料申请
+ * @param type
+ */
+void InformationList::materialProcessBatch(QString type)
+{
+    if (loading) return;
+    QList<QString> types = {
+        "setMaterialComplete",
+        "sponsorMaterialComplete",
+        "sponsorCertSend",
+        "setMaterialRemark"
+    };
+    if (types.indexOf(type) == -1) {
+        return showError("未知的资料收齐类型！");
+    }
+    QList<int> studentIds = getSelectedIds();
+    if (studentIds.empty()) {
+        return showError("没有选中任何学员！");
+    }
+    QStringList id_list;
+    for(int i = 0; i < studentIds.count(); i++) {
+        id_list << QString::number(studentIds.at(i));
+    }
+    QString ids = id_list.join(",");
+
+    loading = true;
+    QString url = server_url + "/api/desktop/educational/%1";
+    QString token = Global::cache()->getItem("token");
+    qDebug() << "发起请求：" << url;
+    QVariantMap data;
+    data.insert("student_id", ids);
+    httpClient->post(url.arg(type))
+        .header("content-type", "application/json")
+        .header("authorization", QString("Bearer %1").arg(token))
+        .body(data)
+        .onResponse([this, type](QByteArray result){
+            loading = false;
+            QJsonObject json = QJsonDocument::fromJson(result).object();
+            if (json.isEmpty()) {
+                return showError("服务器响应为空！");
+            }
+            if (json["code"].toInt() != 0) {
+                return showError(json["msg"].toString());
+            }
+            if (type == "setMaterialComplete" || type == "setMaterialRemark") {
+                // 设置资料字段为已收齐，重新加载页面 or 将当前行的几个资料字段设置为已收齐
+                loadStudentData();
+            }
+            return showSuccessMsg(json["msg"].toString());
+        })
+        .onError([this](QString errorStr){
+            loading = false;
+            selectedId = 0;
+            showError(errorStr);
+        })
+        .timeout(10 * 1000) // 10s超时
+            .exec();
 }
 
 

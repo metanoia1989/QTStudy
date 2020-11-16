@@ -38,7 +38,6 @@ public:
     void updateUIStatus();
     void loadFilterData();
 
-
 public slots:
     void showError(QString msg);
     void showStudentData(QByteArray data);
@@ -46,6 +45,7 @@ public slots:
     void cellDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void ProvideContextMenu(const QPoint& position);
     void materialProcessRequest(QString type);
+    void materialProcessBatch(QString type);
 
 private slots:
     void on_refreshBtn_clicked();
@@ -71,11 +71,12 @@ signals:
     void requestShowError(QString msg);
 
 private:
+    QList<int> getSelectedIds();
+
     Ui::InformationList *ui;
-
     StudentItemModel *model;
-
     AeaQt::HttpClient *httpClient;
+
     QString server_url; // 服务器地址
     QString keyword; // 搜索关键词
     QString clazz_name; // 班次名称
@@ -88,6 +89,7 @@ private:
 
     int selectedId = 0; // 被选择的学员ID
     QMenu *menu; // 右键菜单
-    CheckboxHeader *header;
+    QMenu *batchMenu; // 批量处理菜单
+    CheckboxHeader *header; // 自定义表格头部
 };
 #endif // MAINWINDOW_H

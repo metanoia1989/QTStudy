@@ -6,5 +6,6 @@
         <file>icons/tick.png</file>
         <file>icons/refresh.png</file>
         <file>icons/logout.png</file>
+        <file>icons/batch.png</file>
     </qresource>
 </RCC>
