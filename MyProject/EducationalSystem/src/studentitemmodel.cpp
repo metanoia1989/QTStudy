@@ -9,9 +9,9 @@ StudentItemModel::StudentItemModel(QObject *parent)
 Qt::ItemFlags StudentItemModel::flags(const QModelIndex &index) const
 {
     if (!disableColumns.isEmpty() && disableColumns.indexOf(index.column()) != -1) {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return QStandardItemModel::flags(index) ^ Qt::ItemIsEditable;
     }
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable ;
+    return QStandardItemModel::flags(index);
 }
 
 void StudentItemModel::setDisableColumns(QList<int> indexs)

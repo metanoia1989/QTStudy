@@ -1,5 +1,6 @@
 #include "certificatedelegate.h"
 #include <QComboBox>
+#include <QStandardItemModel>
 
 
 CertificateDelegate::CertificateDelegate(QObject *parent)
@@ -15,6 +16,10 @@ QWidget *CertificateDelegate::createEditor(QWidget *parent, const QStyleOptionVi
     editor->addItem("已制作");
     editor->addItem("未寄出");
     editor->addItem("已寄出");
+    // 禁止选择已寄出
+    auto model = qobject_cast<QStandardItemModel*>(editor->model());
+    auto item = model->item(3);
+    item->setEnabled(false);
     return editor;
 }
 

@@ -83,6 +83,11 @@ QString getServerUrl();
 /**
  * @brief 展示错误信息
  */
-void showErrorMsg();
+void showErrorMsg(QString msg);
+
+/**
+ * @brief 展示成功信息
+ */
+void showSuccessMsg(QString msg);
 
 #endif // GLOBAL_H

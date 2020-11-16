@@ -14,6 +14,7 @@ CONFIG += c++11
 TEMPLATE = app
 
 SOURCES += \
+    checkboxheader.cpp \
     delegate/certificatedelegate.cpp \
     logindialog.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     utils/token.cpp
 
 HEADERS += \
+    checkboxheader.h \
     delegate/certificatedelegate.h \
     logindialog.h \
     informationlist.h \

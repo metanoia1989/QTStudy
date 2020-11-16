@@ -189,3 +189,13 @@ void showErrorMsg(QString msg)
     msgBox->exec();
     msgBox->deleteLater();
 }
+
+void showSuccessMsg(QString msg)
+{
+    auto msgBox = new QMessageBox();
+    msgBox->setWindowTitle("请求成功");
+    msgBox->setIcon(QMessageBox::Information);
+    msgBox->setText(msg);
+    msgBox->exec();
+    msgBox->deleteLater();
+}

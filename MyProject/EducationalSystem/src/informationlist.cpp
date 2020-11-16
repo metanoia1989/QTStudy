@@ -1,11 +1,13 @@
 #include "informationlist.h"
 #include "ui_informationlist.h"
 #include "studentitemmodel.h"
+#include "checkboxheader.h"
 #include "delegate/certificatedelegate.h"
 #include "utils/global.h"
 #include "utils/cache.h"
 #include "utils/threads.h"
 #include "HttpClient.h"
+
 #include <QMessageBox>
 #include <QDebug>
 #include <QJsonDocument>
@@ -13,6 +15,10 @@
 #include <QJsonObject>
 #include <QTimer>
 #include <QProcess>
+#include <QMenu>
+#include <QAction>
+#include <QPoint>
+#include <QStyle>
 
 InformationList::InformationList(QWidget *parent)
     : QWidget(parent)
@@ -46,15 +52,17 @@ InformationList::~InformationList()
  */
 void InformationList::initTableView()
 {
+
     model = new StudentItemModel(this);
-    model->setColumnCount(16);
+    model->setColumnCount(17);
     model->setDisableColumns({
         0, 1, 2, 3,
         4, 5, 6, 7,
-        9, 10, 11, 12,
-        13, 14, 15
+        8, 10, 11, 12,
+        13, 14, 15, 16
     });
     model->setHorizontalHeaderLabels({
+        "    学员ID",
         "班级名称", "授课老师", "助教老师", "学员姓名",
         "身份证号", "学员电话", "招生老师", "收齐情况",
         "资料收齐备注",
@@ -66,15 +74,51 @@ void InformationList::initTableView()
     ui->studentsDataTable->setAlternatingRowColors(true);
     ui->studentsDataTable->setStyleSheet("QTableView{background-color: #fff;"
     "alternate-background-color: #f3f3f3;}");
-    ui->studentsDataTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->studentsDataTable->setSelectionMode(QAbstractItemView::MultiSelection);
-    ui->studentsDataTable->setItemDelegateForColumn(16, new CertificateDelegate(this));
+//    ui->studentsDataTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+//    ui->studentsDataTable->setSelectionMode(QAbstractItemView::MultiSelection);
+    ui->studentsDataTable->setItemDelegateForColumn(17, new CertificateDelegate(this));
 
     QFont font = QFont("微软雅黑", 12);
     font.setBold(true);
     ui->studentsDataTable->horizontalHeader()->setFont(font);
 
+    // 数据变化时，请求后端更新
     connect(model, &QAbstractItemModel::dataChanged, this, &InformationList::cellDataChange);
+
+    // 设置 header
+    header = new CheckboxHeader(Qt::Horizontal, ui->studentsDataTable);
+    ui->studentsDataTable->setHorizontalHeader(header);
+    connect(header, &CheckboxHeader::selectAllClicked, [this](QStyle::StateFlag state){
+        for (int i = 0; i < model->rowCount(); i++) {
+            auto item = model->item(i, 0);
+            if (state == QStyle::State_On) {
+                item->setCheckState(Qt::Checked);
+            } else {
+                item->setCheckState(Qt::Unchecked);
+            }
+        }
+    });
+
+    // 设置右键菜单
+    menu = new QMenu(ui->studentsDataTable);
+    QAction *approvalAction = new QAction("申请资料收齐");
+    QAction *certAction = new QAction("申请结业证书已寄");
+    QAction *collectionAction = new QAction("设置资料字段已收齐");
+    menu->addActions({ approvalAction, certAction, collectionAction  });
+
+    ui->studentsDataTable->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(approvalAction, &QAction::triggered, [this](){
+        materialProcessRequest("sponsorMaterialComplete");
+    });
+    connect(certAction, &QAction::triggered, [this](){
+        materialProcessRequest("sponsorCertSend");
+    });
+    connect(collectionAction, &QAction::triggered, [this](){
+        materialProcessRequest("setMaterialComplete");
+    });
+    connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
+                this, &InformationList::ProvideContextMenu);
 }
 
 /**
@@ -273,6 +317,7 @@ void InformationList::showStudentData(QByteArray result)
         auto studentItem = studentList.at(i).toObject();
 
         QList<QString> keys = {
+            "id",
             "clazz_name", "lecturer_name", "assistant_name", "student_name",
             "identity_card", "student_phone", "recruiter", "complete_material",
             "material_remark",
@@ -297,6 +342,9 @@ void InformationList::showStudentData(QByteArray result)
                 item->setData(QColor(209, 228, 240), Qt::BackgroundColorRole);
             } else if (key == "graduation_status") {
                 item->setData(studentItem[key].toString(), Qt::EditRole);
+            } else if (key == "id") {
+                item->setData(studentItem[key].toInt(), Qt::DisplayRole);
+                item->setCheckable(true);
             } else {
                 QString text = studentItem[key].toString();
                 if (text == "未收齐") text = "";
@@ -332,6 +380,27 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
     int studentId = item->data(Qt::UserRole + 1).value<int>();
     QString key = item->data(Qt::UserRole + 2).value<QString>();
     QString value = item->data(Qt::DisplayRole).value<QString>();
+
+    if (key == "id") {
+        int checked = 0;
+        int unchecked = 0;
+        for (int i = 0; i < model->rowCount(); i++) {
+            if (model->item(i, 0)->checkState() == Qt::Checked) {
+                checked++;
+            } else if (model->item(i, 0)->checkState() == Qt::Unchecked) {
+                unchecked++;
+            }
+            if (checked > 0 && unchecked > 0) {
+                header->updateCheckState(QStyle::State_NoChange);
+            } else if (checked > 0) {
+                header->updateCheckState(QStyle::State_On);
+            } else {
+                header->updateCheckState(QStyle::State_Off);
+            }
+        }
+        return;
+    }
+
     qDebug() << QString("被修改的值为：%1# %2 -> %3").arg(studentId).arg(key).arg(value);
     QString student_list_url = QString("%1/api/desktop/educational/%2").arg(server_url).arg(studentId);
     QVariantMap data;
@@ -342,10 +411,88 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
         .header("content-type", "application/json")
         .header("authorization", QString("Bearer %1").arg(token))
         .body(data)
-        .onResponse([](QByteArray result) {
+        .onResponse([this](QByteArray result) {
             qDebug() << result;
+            QJsonObject json = QJsonDocument::fromJson(result).object();
+            if (json.isEmpty()) {
+                return showError("服务器响应为空！");
+            }
+            if (json["code"].toInt() != 0) {
+                return showError(json["msg"].toString());
+            }
         })
         .onError(this, SLOT(showError(QString)))
+        .timeout(10 * 1000) // 10s超时
+            .exec();
+}
+
+/**
+ * @brief 提供右键菜单
+ * @param position
+ */
+void InformationList::ProvideContextMenu(const QPoint& position)
+{
+    qDebug() << "测试是否被调用" << position.x() << "," << position.y();
+    int row = ui->studentsDataTable->rowAt(position.y());
+    int cellHeight = ui->studentsDataTable->rowHeight(row);
+    QStandardItem *item = model->itemFromIndex(ui->studentsDataTable->indexAt(position));
+    selectedId = item->data(Qt::UserRole + 1).value<int>();
+    qDebug() << "此条记录的学员ID: " << selectedId;
+
+    auto pos = ui->studentsDataTable->mapToGlobal(position);
+    menu->exec(pos + QPoint(0, cellHeight * 1.5));
+}
+
+/**
+ * @brief 资料收齐申请相关处理
+ * @param type
+ */
+void InformationList::materialProcessRequest(QString type)
+{
+    if (loading) return;
+    QList<QString> types = {
+        "setMaterialComplete",
+        "sponsorMaterialComplete",
+        "sponsorCertSend"
+    };
+    if (types.indexOf(type) == -1) {
+        return showError("未知的资料收齐类型！");
+    }
+    if (selectedId == 0) {
+        return showError("无效的学员ID！");
+    }
+
+    loading = true;
+    QString url = server_url + "/api/desktop/educational/%1";
+    QString token = Global::cache()->getItem("token");
+    qDebug() << "发起请求：" << url;
+    QVariantMap data;
+    data.insert("student_id", selectedId);
+    httpClient->post(url.arg(type))
+        .header("content-type", "application/json")
+        .header("authorization", QString("Bearer %1").arg(token))
+        .body(data)
+        .onResponse([this, type](QByteArray result){
+            loading = false;
+            selectedId = 0;
+            QJsonObject json = QJsonDocument::fromJson(result).object();
+            if (json.isEmpty()) {
+                return showError("服务器响应为空！");
+            }
+            if (json["code"].toInt() != 0) {
+                return showError(json["msg"].toString());
+            }
+            if (type == "setMaterialComplete") {
+                // 设置资料字段为已收齐，重新加载页面 or 将当前行的几个资料字段设置为已收齐
+                loadStudentData();
+            }
+            return showSuccessMsg(json["msg"].toString());
+        })
+        .onError([this](QString errorStr){
+            loading = false;
+            selectedId = 0;
+            showError(errorStr);
+        })
         .timeout(10 * 1000) // 10s超时
         .exec();
 }

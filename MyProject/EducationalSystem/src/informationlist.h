@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QMetaType>
+#include <QMenu>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class InformationList; }
@@ -13,6 +14,7 @@ namespace AeaQt {
     class HttpClient;
 };
 class StudentItemModel;
+class CheckboxHeader;
 
 enum DataType {
     ClazzData,
@@ -36,11 +38,14 @@ public:
     void updateUIStatus();
     void loadFilterData();
 
+
 public slots:
     void showError(QString msg);
     void showStudentData(QByteArray data);
     void showFilterData(DataType type, QStringList data);
     void cellDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void ProvideContextMenu(const QPoint& position);
+    void materialProcessRequest(QString type);
 
 private slots:
     void on_refreshBtn_clicked();
@@ -80,5 +85,9 @@ private:
     int per_page; // 每页数量
     int last_page; // 最大页数
     bool loading; // 是否在加载
+
+    int selectedId = 0; // 被选择的学员ID
+    QMenu *menu; // 右键菜单
+    CheckboxHeader *header;
 };
 #endif // MAINWINDOW_H
