@@ -59,7 +59,7 @@ void InformationList::initTableView()
     model->setDisableColumns({
         0, 1, 2, 3,
         4, 5, 6, 7,
-        8, 10, 11, 12,
+        8, 11, 12,
         13, 14, 15, 16
     });
     model->setHorizontalHeaderLabels({
@@ -567,6 +567,7 @@ void InformationList::materialProcessBatch(QString type)
 
     loading = true;
     QString url = server_url + "/api/desktop/educational/%1";
+    url = url.arg(type);
     QString token = Global::cache()->getItem("token");
     qDebug() << "发起请求：" << url;
     QVariantMap data;
@@ -575,7 +576,7 @@ void InformationList::materialProcessBatch(QString type)
         data.insert("remark", remark);
     }
 
-    httpClient->post(url.arg(type))
+    httpClient->post(url)
         .header("content-type", "application/json")
         .header("authorization", QString("Bearer %1").arg(token))
         .body(data)
