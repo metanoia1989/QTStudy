@@ -60,17 +60,15 @@ bool Thread::isStarted() const
 void Thread::run()
 {
     while (true) {
-        m_threadPool->m_mutex.lock();
+        QMutexLocker lock(&(m_threadPool->m_mutex));
         qDebug() << QString("线程%1 进入等待！").arg(m_id);
-        m_threadPool->m_cond.wait(&m_threadPool->m_mutex);
+        m_threadPool->m_cond.wait(lock.mutex());
         qDebug() << QString("线程%1 被唤醒！").arg(m_id);
         if (!m_threadPool->is_running && m_threadPool->m_tasks.empty()) {
-            m_threadPool->m_mutex.unlock();
             return;
         }
         m_task = m_threadPool->m_tasks.front();
         m_threadPool->m_tasks.pop();
-        m_threadPool->m_mutex.unlock();
         m_task.run();
     }
 }
