@@ -14,6 +14,8 @@
 qint64 getFileSize(const QString& url);
 void multiDownload(const QString &url, qint64 fileSize, const QString &filename);
 
+ThreadPool pool;
+
 QMutex mutex;
 int count = 0;
 
@@ -25,28 +27,62 @@ void sum(int a, int b)
     qDebug() << QString("第%1次计算").arg(count);
 }
 
+void event()
+{
+    {
+        QMutexLocker lock(&mutex);
+        qDebug() << "当前线程ID为：" << QThread::currentThreadId() << "，开始执行任务";
+    }
+    QTimer timer;
+    QObject::connect(&timer, &QTimer::timeout, [](){
+        QMutexLocker lock(&mutex);
+        qDebug() << "当前线程ID为：" << QThread::currentThreadId() << "，定时器触发成功";
+    });
+    timer.setInterval(1000);
+    timer.start();
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    ThreadPool pool;
-    pool.start();
-    qDebug() << "线程池启动完毕，当前任务队列有任务" << pool.tasksCount();
-    for(size_t i = 0; i < 100; i++) {
-        Task t(sum, i, i);
-        pool.enqueue(t);
+    // 测试计算任务
+    if (false) {
+        ThreadPool pool;
+        pool.start();
+        qDebug() << "线程池启动完毕，当前任务队列有任务" << pool.tasksCount();
+        for(size_t i = 0; i < 100; i++) {
+            Task t(sum, i, i);
+            pool.enqueue(t);
+        }
+        qDebug() << "任务添加完毕，当前任务队列有任务" << pool.tasksCount();
+        QTimer timer;
+        QObject::connect(&timer, &QTimer::timeout, [&pool](){
+            qDebug() << "当前任务队列有任务" << pool.tasksCount();
+        });
+        timer.setInterval(1000);
+        timer.start();
     }
-    qDebug() << "任务添加完毕，当前任务队列有任务" << pool.tasksCount();
-    QTimer timer;
-    QObject::connect(&timer, &QTimer::timeout, [&pool](){
-        qDebug() << "当前任务队列有任务" << pool.tasksCount();
-    });
-    timer.setInterval(1000);
-    timer.start();
-//    QString url = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4";
-//    qint64 fileSize = getFileSize(url);
-//    QString filename = QFileInfo(url).fileName();
-//    multiDownload(url, fileSize, filename);
+
+    // 测试定时器任务
+    if (true) {
+        pool.start();
+        qDebug() << "线程池启动完毕，当前任务队列有任务" << pool.tasksCount();
+        for(size_t i = 0; i < 100; i++) {
+            Task t(event);
+            pool.enqueue(t);
+        }
+        qDebug() << "任务添加完毕，当前任务队列有任务" << pool.tasksCount();
+    }
+
+    // 测试下载任务
+    if (false) {
+        pool.start();
+        QString url = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4";
+        qint64 fileSize = getFileSize(url);
+        QString filename = QFileInfo(url).fileName();
+        multiDownload(url, fileSize, filename);
+    }
     return a.exec();
 }
 
@@ -128,6 +164,7 @@ void multiDownload(const QString &url, qint64 fileSize, const QString &filename)
 
     // 任务队列
     auto downloadFunc = [writeFile, url](const QPair<qint64, qint64>& pair) {
+        qDebug() << QString("当前线程ID") << QThread::currentThreadId();
         QNetworkAccessManager *mgr = new QNetworkAccessManager;
         QNetworkRequest request;
         request.setUrl(url);
@@ -145,13 +182,22 @@ void multiDownload(const QString &url, qint64 fileSize, const QString &filename)
             writeFile(writePos + currentReceived, data);
             currentReceived += data.size();
         });
+        QObject::connect(reply, &QNetworkReply::finished, [](){
+            qDebug() << "线程" << QThread::currentThreadId() << "下载完毕";
+        });
         QObject::connect(reply, &QNetworkReply::errorOccurred, [reply](QNetworkReply::NetworkError error){
             qDebug() << "发生了错误，呜啦啦啦" << reply->errorString();
         });
         QObject::connect(reply, &QNetworkReply::finished, mgr, &QNetworkAccessManager::deleteLater);
+        // 测试事件循环
+        QTimer timer;
+        timer.setInterval(1000);
+        timer.start();
+        QObject::connect(&timer, &QTimer::timeout, [](){
+            qDebug() << "的确有触发事件循环，可喜可贺！";
+        });
     };
-    ThreadPool pool;
-    pool.start();
+    qDebug() << QString("主线程ID") << QThread::currentThreadId();
     for (auto &pair : vec) {
         qDebug() << "输入任务数据，耶耶耶!";
         Task t(downloadFunc, pair);
