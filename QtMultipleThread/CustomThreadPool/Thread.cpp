@@ -1,6 +1,5 @@
 #include "Thread.h"
 #include "ThreadPool.h"
-#include <QtAlgorithms>
 #include <QDebug>
 
 Thread::Thread(int id, ThreadPool *pool, QObject *parent) :
@@ -59,6 +58,7 @@ bool Thread::isStarted() const
 
 void Thread::run()
 {
+    // 就是抢任务这一块出问题了，任务输入的太快
     while (true) {
         QMutexLocker lock(&(m_threadPool->m_mutex));
         qDebug() << QString("线程%1 进入等待！").arg(m_id);

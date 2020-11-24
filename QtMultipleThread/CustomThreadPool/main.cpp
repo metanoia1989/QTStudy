@@ -9,6 +9,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkAccessManager>
+#include <QTimer>
 
 qint64 getFileSize(const QString& url);
 void multiDownload(const QString &url, qint64 fileSize, const QString &filename);
@@ -29,10 +30,18 @@ int main(int argc, char *argv[])
 
     ThreadPool pool;
     pool.start();
+    qDebug() << "线程池启动完毕，当前任务队列有任务" << pool.tasksCount();
     for(size_t i = 0; i < 100; i++) {
         Task t(sum, i, i);
         pool.enqueue(t);
     }
+    qDebug() << "任务添加完毕，当前任务队列有任务" << pool.tasksCount();
+    QTimer timer;
+    QObject::connect(&timer, &QTimer::timeout, [&pool](){
+        qDebug() << "当前任务队列有任务" << pool.tasksCount();
+    });
+    timer.setInterval(1000);
+    timer.start();
 //    QString url = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4";
 //    qint64 fileSize = getFileSize(url);
 //    QString filename = QFileInfo(url).fileName();
