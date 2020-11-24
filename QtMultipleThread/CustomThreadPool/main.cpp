@@ -14,13 +14,14 @@
 qint64 getFileSize(const QString& url);
 void multiDownload(const QString &url, qint64 fileSize, const QString &filename);
 
+QMutex mutex;
 int count = 0;
+
 void sum(int a, int b)
 {
-    QMutex mutex;
     QMutexLocker lock(&mutex);
-    qDebug() << QString("%1+%2=%3").arg(a).arg(b).arg(a+b);
     count++;
+    qDebug() << QString("%1+%2=%3").arg(a).arg(b).arg(a+b);
     qDebug() << QString("第%1次计算").arg(count);
 }
 

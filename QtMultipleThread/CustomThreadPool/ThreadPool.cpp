@@ -29,7 +29,6 @@ void ThreadPool::enqueue(Task &t)
 {
     QMutexLocker lock(&m_mutex);
     if (!is_running) {
-        m_mutex.unlock();
         return;
     }
     m_tasks.push(std::move(t));

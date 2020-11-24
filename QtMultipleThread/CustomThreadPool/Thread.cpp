@@ -61,9 +61,9 @@ void Thread::run()
     // 就是抢任务这一块出问题了，任务输入的太快
     while (true) {
         QMutexLocker lock(&(m_threadPool->m_mutex));
-        qDebug() << QString("线程%1 进入等待！").arg(m_id);
+//        qDebug() << QString("线程%1 进入等待！").arg(m_id);
         m_threadPool->m_cond.wait(lock.mutex());
-        qDebug() << QString("线程%1 被唤醒！").arg(m_id);
+//        qDebug() << QString("线程%1 被唤醒！").arg(m_id);
         if (!m_threadPool->is_running && m_threadPool->m_tasks.empty()) {
             return;
         }
