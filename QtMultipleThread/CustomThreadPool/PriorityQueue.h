@@ -16,6 +16,7 @@ public:
     T front();
     void push(const T& val);
     void pop();
+    int size();
 
 private:
     void up_adjust(); // 向上调整
@@ -58,6 +59,12 @@ void PriorityQueue<T, Array, compare_T>::pop()
     qSwap(elements[count - 1], elements[0]);
     elements.pop_back();
     down_adjust();
+}
+
+template<typename T, typename Array, typename compare_T>
+int PriorityQueue<T, Array, compare_T>::size()
+{
+    return elements.size();
 }
 
 template<typename T, typename Array, typename compare_T>

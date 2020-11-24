@@ -1,6 +1,7 @@
 #include "ThreadPool.h"
 #include "Thread.h"
 #include <QDebug>
+#include <algorithm>
 
 ThreadPool::ThreadPool(size_t threads_num, QObject *parent)
     : QObject(parent)
@@ -27,16 +28,23 @@ ThreadPool::~ThreadPool()
 void ThreadPool::enqueue(Task &t)
 {
     QMutexLocker lock(&m_mutex);
-    if (!is_running)
+    if (!is_running) {
+        m_mutex.unlock();
         return;
-    m_tasks.push(qMove(t));
+    }
+    m_tasks.push(std::move(t));
     m_cond.wakeOne();
-    qDebug() << "测试唤醒";
 }
 
 void ThreadPool::start()
 {
+    is_running = true;
     for (auto thread : m_threads) {
             thread->start();
     }
+}
+
+int ThreadPool::tasksCount()
+{
+    return m_tasks.size();
 }

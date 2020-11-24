@@ -8,8 +8,8 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QWaitCondition>
-#include <QtAlgorithms>
 #include <QSharedPointer>
+#include <QTimer>
 
 class Thread;
 
@@ -22,10 +22,11 @@ public:
     ~ThreadPool();
     void enqueue(Task& t);
     void start();
+    int tasksCount();
 
 private:
     QVector<QSharedPointer<Thread>> m_threads;
-    bool is_running = true;
+    bool is_running = false;
     QueueType m_tasks;
     QMutex m_mutex;
     QWaitCondition m_cond;
