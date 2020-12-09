@@ -33,8 +33,8 @@ QString TokenPrivate::token()
     QMutexLocker locker(m_mutex);
     Q_UNUSED(locker);
     //
-    if (m_info.strToken.isEmpty())
-    {
+//    if (m_info.strToken.isEmpty())
+//    {
         QString url = getServerUrl() + "/api/desktop/auth/login";
         qDebug() << "请球URL：" << url;
         QEventLoop loop;
@@ -72,7 +72,7 @@ QString TokenPrivate::token()
         qDebug() << "请求出错" << m_lastErrorMessage;
         return QString();
 
-    }
+//    }
 
     Q_ASSERT(0);
 }
