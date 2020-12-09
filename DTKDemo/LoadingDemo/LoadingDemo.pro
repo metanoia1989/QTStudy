@@ -1,4 +1,4 @@
-QT       += core gui network
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,15 +10,10 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    utils.cpp \
     widget.cpp
 
 HEADERS += \
-    utils.h \
     widget.h
-
-FORMS += \
-    widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
