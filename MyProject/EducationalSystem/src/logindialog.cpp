@@ -3,6 +3,7 @@
 #include "utils/global.h"
 #include "utils/token.h"
 #include <QMessageBox>
+#include <QDebug>
 
 
 LoginDialog::LoginDialog(QDialog *parent) :
@@ -60,6 +61,7 @@ void LoginDialog::on_btn_login_clicked()
     Token::setUsername(username);
     Token::setPasswd(password);
     QString strToken = Token::token();
+    qDebug() << "拿到的Token 值为：" << strToken;
     if (Token::lastIsNetworkError()) {
         auto msgBox = new QMessageBox(this);
         msgBox->setWindowTitle("请求出错");

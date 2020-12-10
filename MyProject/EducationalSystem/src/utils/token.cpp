@@ -52,6 +52,7 @@ QString TokenPrivate::token()
         QNetworkReply *reply = mgr.post(request, data);
         QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
+        clearLastError();
         if (reply->error() == QNetworkReply::NoError) {
             QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
             qDebug() << "请求成功：" << json;
