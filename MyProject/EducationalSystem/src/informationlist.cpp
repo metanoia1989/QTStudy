@@ -3,6 +3,11 @@
 #include "studentitemmodel.h"
 #include "checkboxheader.h"
 #include "delegate/certificatedelegate.h"
+#include "delegate/collectiondelegate.h"
+#include "delegate/datedelegate.h"
+#include "delegate/paperphotodelegate.h"
+#include "delegate/techmaterialdelegate.h"
+
 #include "utils/global.h"
 #include "utils/cache.h"
 #include "utils/threads.h"
@@ -59,23 +64,36 @@ void InformationList::initTableView()
     model->setDisableColumns({
         0, 1, 2, 3,
         4, 5, 6, 7,
-        8, 11, 12,
-        13, 14, 15, 16
+        8, 9
     });
     model->setHorizontalHeaderLabels({
-        "    学员ID",
+        "     学员ID",
         "班级名称", "授课老师", "助教老师", "学员姓名",
         "身份证号", "学员电话", "招生老师", "收齐情况",
-        "资料收齐备注",
+        "资料未收齐情况",
+         "资料收齐备注",
         "教材是否寄出", "纸质版照片", "电子照", "学历扫描件",
-        "身份证扫描件", "工作经历证明", "社保证明", "结业证"
+        "身份证扫描件", "工作经历证明", "社保证明", "结业证",
+        "结业证寄件日期", "结业证寄件备注"
     });
 
     ui->studentsDataTable->setModel(model);
     ui->studentsDataTable->setAlternatingRowColors(true);
     ui->studentsDataTable->setStyleSheet("QTableView{background-color: #fff;"
     "alternate-background-color: #f3f3f3;}");
-    ui->studentsDataTable->setItemDelegateForColumn(17, new CertificateDelegate(this));
+
+    // 设置教材是否寄出 第11列
+    ui->studentsDataTable->setItemDelegateForColumn(11, new TechMaterialDelegate(this));
+    // 设置纸质版照片 第12列
+    ui->studentsDataTable->setItemDelegateForColumn(12, new PaperPhotoDelegate(this));
+    // 其他资料相关字段 第13~17列
+    for (int i = 13;  i<=17; i++) {
+        ui->studentsDataTable->setItemDelegateForColumn(i, new CollectionDelegate(this));
+    }
+    // 设置结业证寄出列的下拉菜单 第18列
+    ui->studentsDataTable->setItemDelegateForColumn(18, new CertificateDelegate(this));
+    // 设置结业证寄出日期  第19列
+    ui->studentsDataTable->setItemDelegateForColumn(19, new DateDelegate(this));
 
     QFont font = QFont("微软雅黑", 12);
     font.setBold(true);
@@ -100,20 +118,21 @@ void InformationList::initTableView()
 
     // 设置右键菜单
     menu = new QMenu(ui->studentsDataTable);
-    QAction *approvalAction = new QAction("申请资料收齐");
+//    QAction *approvalAction = new QAction("申请资料收齐"); // 不需要申请了，自动处理
     QAction *certAction = new QAction("申请结业证书已寄");
     QAction *collectionAction = new QAction("设置资料字段已收齐");
-    menu->addActions({ approvalAction, certAction, collectionAction  });
+    menu->addActions({ certAction, collectionAction  });
 
     ui->studentsDataTable->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(approvalAction, &QAction::triggered, [this](){
-        materialProcessRequest("sponsorMaterialComplete");
-    });
+//    connect(approvalAction, &QAction::triggered, [this](){
+//        materialProcessRequest("sponsorMaterialComplete");
+//    });
     connect(certAction, &QAction::triggered, [this](){
         materialProcessRequest("sponsorCertSend");
     });
     connect(collectionAction, &QAction::triggered, [this](){
+        QMessageBox::information(this, "确认提示", "确认");
         materialProcessRequest("setMaterialComplete");
     });
     connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
@@ -121,19 +140,20 @@ void InformationList::initTableView()
 
     // 设置批处理的右键菜单
     batchMenu = new QMenu(this);
-    QAction *approvalBatAct = new QAction("批量申请资料收齐");
+//    QAction *approvalBatAct = new QAction("批量申请资料收齐");
     QAction *certBatAct = new QAction("批量申请结业证书已寄");
     QAction *collectionBatAct = new QAction("批量设置资料字段已收齐");
     QAction *remarkBatAct = new QAction("批量更新资料收齐备注");
-    batchMenu->addActions({ approvalBatAct, certBatAct, collectionBatAct, remarkBatAct});
+    batchMenu->addActions({ certBatAct, collectionBatAct, remarkBatAct});
     ui->batchBtn->setMenu(batchMenu);
-    connect(approvalBatAct, &QAction::triggered, [this](){
-        materialProcessBatch("sponsorMaterialComplete");
-    });
+//    connect(approvalBatAct, &QAction::triggered, [this](){
+//        materialProcessBatch("sponsorMaterialComplete");
+//    });
     connect(certBatAct, &QAction::triggered, [this](){
         materialProcessBatch("sponsorCertSend");
     });
     connect(collectionBatAct, &QAction::triggered, [this](){
+
         materialProcessBatch("setMaterialComplete");
     });
     connect(remarkBatAct, &QAction::triggered, [this](){
@@ -362,16 +382,17 @@ void InformationList::showStudentData(QByteArray result)
             "id",
             "clazz_name", "lecturer_name", "assistant_name", "student_name",
             "identity_card", "student_phone", "recruiter", "complete_material",
-            "material_remark",
+            "material_situation", "material_remark",
             "data_sent", "paper_photo", "electronic_photo", "education",
-            "sfzfyj", "work_proof", "social_data", "graduation_status"
+            "sfzfyj", "work_proof", "social_data", "graduation_status",
+            "cert_mail_date", "cert_mail_remark"
         };
 
         QList<QStandardItem*> rowData;
         for(auto &key: keys) {
             QStandardItem *item = new QStandardItem;
             // 设置显示的内容
-            if (key == "complete_material") {
+            if (key == "complete_material") { // 标志整个资料的收齐状态
                 if (studentItem[key].toInt() == 1) {
                     item->setData("已收齐", Qt::DisplayRole);
                     item->setData(QIcon(":/icons/tick.png"), Qt::DecorationRole);
@@ -379,10 +400,10 @@ void InformationList::showStudentData(QByteArray result)
                     item->setData("未收齐", Qt::DisplayRole);
                     item->setData(QIcon(":/icons/cross.png"), Qt::DecorationRole);
                 }
-            } else if (key == "material_remark") {
+            } else if (key == "material_remark") { // 资料收齐备注
                 item->setData(studentItem[key].toString(), Qt::DisplayRole);
                 item->setData(QColor(209, 228, 240), Qt::BackgroundColorRole);
-            } else if (key == "graduation_status") {
+            } else if (key == "graduation_status") { // 结业证寄出状态
                 item->setData(studentItem[key].toString(), Qt::EditRole);
             } else if (key == "id") {
                 item->setData(studentItem[key].toInt(), Qt::DisplayRole);

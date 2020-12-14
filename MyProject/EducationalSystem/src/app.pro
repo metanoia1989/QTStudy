@@ -16,6 +16,10 @@ TEMPLATE = app
 SOURCES += \
     checkboxheader.cpp \
     delegate/certificatedelegate.cpp \
+    delegate/collectiondelegate.cpp \
+    delegate/datedelegate.cpp \
+    delegate/paperphotodelegate.cpp \
+    delegate/techmaterialdelegate.cpp \
     logindialog.cpp \
     main.cpp \
     informationlist.cpp \
@@ -30,6 +34,10 @@ SOURCES += \
 HEADERS += \
     checkboxheader.h \
     delegate/certificatedelegate.h \
+    delegate/collectiondelegate.h \
+    delegate/datedelegate.h \
+    delegate/paperphotodelegate.h \
+    delegate/techmaterialdelegate.h \
     logindialog.h \
     informationlist.h \
     studentitemmodel.h \
