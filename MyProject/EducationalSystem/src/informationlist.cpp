@@ -66,6 +66,11 @@ void InformationList::initTableView()
         4, 5, 6, 7,
         8, 9
     });
+    model->setMaterialColumns({
+        12, 13, 14,
+        15, 16, 17
+    });
+    model->setMaterialCompleteColumn(8);
     model->setHorizontalHeaderLabels({
         "     学员ID",
         "班级名称", "授课老师", "助教老师", "学员姓名",
@@ -132,8 +137,10 @@ void InformationList::initTableView()
         materialProcessRequest("sponsorCertSend");
     });
     connect(collectionAction, &QAction::triggered, [this](){
-        QMessageBox::information(this, "确认提示", "确认");
-        materialProcessRequest("setMaterialComplete");
+        int result = QMessageBox::information(this, "确认提示", "确认要设置为已收齐吗？", tr("确认"), tr("取消"));
+        if (result == tr("确定").toInt()) {
+            materialProcessRequest("setMaterialComplete");
+        }
     });
     connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
                 this, &InformationList::ProvideContextMenu);
@@ -153,8 +160,10 @@ void InformationList::initTableView()
         materialProcessBatch("sponsorCertSend");
     });
     connect(collectionBatAct, &QAction::triggered, [this](){
-
-        materialProcessBatch("setMaterialComplete");
+        int result = QMessageBox::information(this, "确认提示", "确认要设置为已收齐吗？", tr("确认"), tr("取消"));
+        if (result == tr("确定").toInt()) {
+            materialProcessBatch("setMaterialComplete");
+        }
     });
     connect(remarkBatAct, &QAction::triggered, [this](){
         bool ok;
@@ -444,6 +453,10 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
     QString key = item->data(Qt::UserRole + 2).value<QString>();
     QString value = item->data(Qt::DisplayRole).value<QString>();
 
+    if (key == "complete_material") {
+        return;
+    }
+
     if (key == "id") {
         int checked = 0;
         int unchecked = 0;
@@ -463,6 +476,13 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
         }
         return;
     }
+
+    // 资料相关字段变化时，自动更新资料未收齐情况
+    QList<int> materialColumns = model->getMaterialColumns();
+    if (materialColumns.indexOf(topLeft.column()) != -1) {
+
+    }
+
 
     qDebug() << QString("被修改的值为：%1# %2 -> %3").arg(studentId).arg(key).arg(value);
     QString student_list_url = QString("%1/api/desktop/educational/%2").arg(server_url).arg(studentId);
@@ -528,7 +548,7 @@ void InformationList::materialProcessRequest(QString type)
     loading = true;
     QString url = server_url + "/api/desktop/educational/%1";
     QString token = Global::cache()->getItem("token");
-    qDebug() << "发起请求：" << url;
+    qDebug() << "发起请求：" << url.arg(type);
     QVariantMap data;
     data.insert("student_id", selectedId);
     httpClient->post(url.arg(type))
