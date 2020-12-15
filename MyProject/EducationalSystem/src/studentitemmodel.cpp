@@ -46,6 +46,11 @@ QList<int> StudentItemModel::getMaterialColumns()
     return materialColumns;
 }
 
+int StudentItemModel::getMaterialCompleteColumn()
+{
+    return materialCompleteColumn;
+}
+
 bool StudentItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
      if (index.isValid() && role == Qt::EditRole) {

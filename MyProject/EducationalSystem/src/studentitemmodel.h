@@ -18,6 +18,7 @@ public:
     void setMaterialColumns(QList<int> indexs);
     void setMaterialCompleteColumn(int column);
     QList<int> getMaterialColumns();
+    int getMaterialCompleteColumn();
 
 
 protected:

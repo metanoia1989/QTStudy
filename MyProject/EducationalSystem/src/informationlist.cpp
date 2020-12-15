@@ -453,7 +453,7 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
     QString key = item->data(Qt::UserRole + 2).value<QString>();
     QString value = item->data(Qt::DisplayRole).value<QString>();
 
-    if (key == "complete_material") {
+    if (key == "complete_material" || key == "material_situation") {
         return;
     }
 
@@ -477,18 +477,39 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
         return;
     }
 
-    // 资料相关字段变化时，自动更新资料未收齐情况
-    QList<int> materialColumns = model->getMaterialColumns();
+    // 资料相关字段变化时，自动计算资料未收齐情况
+    QString materialSituation = "";
+    QList<int> materialColumns = model->getMaterialColumns(); // 资料字段
+    QList<QString> completeStatus = { "已收齐", "提前提交" }; // 资料收齐状态
+    QStringList inComplete;
     if (materialColumns.indexOf(topLeft.column()) != -1) {
-
+        for (int i=0; i<materialColumns.count(); i++) {
+            int column = materialColumns.at(i);
+            QString label = model->headerData(column, Qt::Horizontal).toString();
+            QString text = column == topLeft.column() ? value : model->itemFromIndex(
+                model->index(topLeft.row(), column))->data(Qt::EditRole).toString();
+            if (completeStatus.indexOf(text) == -1) {
+                inComplete.append(label);
+            }
+        }
     }
-
+    if (!inComplete.isEmpty()) {
+        materialSituation = inComplete.count() == materialColumns.count()
+            ? "全部缺少" : QString("缺%1").arg(inComplete.join(", "));
+        qDebug() << "资料收集情况说明：" <<  QString("缺%1").arg(inComplete.join(", "));
+    } else {
+        materialSituation = "全部收齐";
+    }
+    int inCompleteColumn = model->getMaterialCompleteColumn() + 1;
+    auto tItem = model->itemFromIndex(model->index(topLeft.row(), inCompleteColumn));
+    tItem->setData(materialSituation, Qt::EditRole);
 
     qDebug() << QString("被修改的值为：%1# %2 -> %3").arg(studentId).arg(key).arg(value);
     QString student_list_url = QString("%1/api/desktop/educational/%2").arg(server_url).arg(studentId);
     QVariantMap data;
     data.insert(key, value);
 
+    qDebug() << "请求数据为：" << data;
     QString token = Global::cache()->getItem("token");
     httpClient->put(student_list_url)
         .header("content-type", "application/json")
