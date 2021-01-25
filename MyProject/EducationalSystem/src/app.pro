@@ -15,6 +15,8 @@ TEMPLATE = app
 
 SOURCES += \
     checkboxheader.cpp \
+    components/SwitchButton.cpp \
+    components/searchcombobox.cpp \
     delegate/certificatedelegate.cpp \
     delegate/collectiondelegate.cpp \
     delegate/datedelegate.cpp \
@@ -33,6 +35,8 @@ SOURCES += \
 
 HEADERS += \
     checkboxheader.h \
+    components/SwitchButton.h \
+    components/searchcombobox.h \
     delegate/certificatedelegate.h \
     delegate/collectiondelegate.h \
     delegate/datedelegate.h \

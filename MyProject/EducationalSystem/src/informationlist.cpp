@@ -25,6 +25,9 @@
 #include <QPoint>
 #include <QStyle>
 #include <QInputDialog>
+#include <QList>
+#include <QClipboard>
+#include <QCompleter>
 
 InformationList::InformationList(QWidget *parent)
     : QWidget(parent)
@@ -70,6 +73,7 @@ void InformationList::initTableView()
         12, 13, 14,
         15, 16, 17
     });
+    model->setSensitiveColumns({ 5, 6 });
     model->setMaterialCompleteColumn(8);
     model->setHorizontalHeaderLabels({
         "     学员ID",
@@ -123,16 +127,14 @@ void InformationList::initTableView()
 
     // 设置右键菜单
     menu = new QMenu(ui->studentsDataTable);
-//    QAction *approvalAction = new QAction("申请资料收齐"); // 不需要申请了，自动处理
+    QAction *copyValueAction = new QAction("复制字段值");
     QAction *certAction = new QAction("申请结业证书已寄");
     QAction *collectionAction = new QAction("设置资料字段已收齐");
-    menu->addActions({ certAction, collectionAction  });
+    QAction *uncollectionAction = new QAction("重置资料字段为未收齐");
+    menu->addActions({ certAction, collectionAction, uncollectionAction, copyValueAction  });
 
     ui->studentsDataTable->setContextMenuPolicy(Qt::CustomContextMenu);
 
-//    connect(approvalAction, &QAction::triggered, [this](){
-//        materialProcessRequest("sponsorMaterialComplete");
-//    });
     connect(certAction, &QAction::triggered, [this](){
         materialProcessRequest("sponsorCertSend");
     });
@@ -142,25 +144,33 @@ void InformationList::initTableView()
             materialProcessRequest("setMaterialComplete");
         }
     });
+    connect(uncollectionAction, &QAction::triggered, [this](){
+        int result = QMessageBox::information(this, "确认提示", "确认要设置为未收齐吗？", tr("确认"), tr("取消"));
+        if (result == tr("确定").toInt()) {
+            materialProcessRequest("clearMaterialComplete");
+        }
+    });
+    connect(copyValueAction, &QAction::triggered, [this](){
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(selectedValue);
+    });
     connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
                 this, &InformationList::ProvideContextMenu);
 
     // 设置批处理的右键菜单
     batchMenu = new QMenu(this);
-//    QAction *approvalBatAct = new QAction("批量申请资料收齐");
     QAction *certBatAct = new QAction("批量申请结业证书已寄");
     QAction *collectionBatAct = new QAction("批量设置资料字段已收齐");
     QAction *remarkBatAct = new QAction("批量更新资料收齐备注");
-    batchMenu->addActions({ certBatAct, collectionBatAct, remarkBatAct});
+    QAction *teachMaterialBatAct = new QAction("批量设置教材已寄");
+
+    batchMenu->addActions({ certBatAct, collectionBatAct, remarkBatAct, teachMaterialBatAct });
     ui->batchBtn->setMenu(batchMenu);
-//    connect(approvalBatAct, &QAction::triggered, [this](){
-//        materialProcessBatch("sponsorMaterialComplete");
-//    });
     connect(certBatAct, &QAction::triggered, [this](){
         materialProcessBatch("sponsorCertSend");
     });
     connect(collectionBatAct, &QAction::triggered, [this](){
-        int result = QMessageBox::information(this, "确认提示", "确认要设置为已收齐吗？", tr("确认"), tr("取消"));
+        int result = QMessageBox::information(this, "确认提示", "确认要设置资料字段为已收齐吗？", tr("确认"), tr("取消"));
         if (result == tr("确定").toInt()) {
             materialProcessBatch("setMaterialComplete");
         }
@@ -173,6 +183,16 @@ void InformationList::initTableView()
             materialProcessBatch("setMaterialRemark");
         }
     });
+    connect(teachMaterialBatAct, &QAction::triggered, [this](){
+        int result = QMessageBox::information(this, "确认提示", "确认教材已寄吗？", tr("确认"), tr("取消"));
+        if (result == tr("确定").toInt()) {
+            materialProcessBatch("setTeachMaterial");
+        }
+    });
+
+    // 关联信息脱敏切换
+    connect(ui->sensitiveToggleBtn, &SwitchButton::statusChanged,
+        model, &StudentItemModel::processSensitiveData);
 }
 
 /**
@@ -301,10 +321,13 @@ void InformationList::showFilterData(DataType type, QStringList data)
         ui->cbx_clazz->clear();
         ui->cbx_clazz->addItem("选择班次");
         ui->cbx_clazz->addItems(data);
+
+
     } else  if (type == DataType::LecturerData) {
         ui->cbx_lecturer->clear();
         ui->cbx_lecturer->addItem("选择授课老师");
         ui->cbx_lecturer->addItems(data);
+
     } else  if (type == DataType::RecruiterData) {
         ui->cbx_recruiter->clear();
         ui->cbx_recruiter->addItem("选择招生老师");
@@ -425,6 +448,7 @@ void InformationList::showStudentData(QByteArray result)
             // 设置自定义数据项
             item->setData(studentItem["id"].toInt(), Qt::UserRole + 1); // 学员ID
             item->setData(key, Qt::UserRole + 2); // 字段名称
+            item->setData(studentItem[key].toString(), Qt::UserRole + 3); // 原始值
             rowData.append(item);
         }
 
@@ -453,7 +477,11 @@ void InformationList::cellDataChange(const QModelIndex &topLeft, const QModelInd
     QString key = item->data(Qt::UserRole + 2).value<QString>();
     QString value = item->data(Qt::DisplayRole).value<QString>();
 
-    if (key == "complete_material" || key == "material_situation") {
+    QList<QString> noUpdates = {
+        "complete_material", "material_situation",
+        "identity_card", "student_phone"
+    };
+    if (noUpdates.contains(key)) {
         return;
     }
 
@@ -541,6 +569,8 @@ void InformationList::ProvideContextMenu(const QPoint& position)
     int cellHeight = ui->studentsDataTable->rowHeight(row);
     QStandardItem *item = model->itemFromIndex(ui->studentsDataTable->indexAt(position));
     selectedId = item->data(Qt::UserRole + 1).value<int>();
+    selectedValue = item->data(Qt::UserRole + 3).value<QString>();
+
     qDebug() << "此条记录的学员ID: " << selectedId;
 
     auto pos = ui->studentsDataTable->mapToGlobal(position);
@@ -555,6 +585,7 @@ void InformationList::materialProcessRequest(QString type)
 {
     if (loading) return;
     QList<QString> types = {
+        "clearMaterialComplete",
         "setMaterialComplete",
         "sponsorMaterialComplete",
         "sponsorCertSend"
@@ -586,7 +617,7 @@ void InformationList::materialProcessRequest(QString type)
             if (json["code"].toInt() != 0) {
                 return showError(json["msg"].toString());
             }
-            if (type == "setMaterialComplete") {
+            if (type == "setMaterialComplete" or type == "clearMaterialComplete") {
                 // 设置资料字段为已收齐，重新加载页面 or 将当前行的几个资料字段设置为已收齐
                 loadStudentData();
             }
@@ -609,10 +640,12 @@ void InformationList::materialProcessBatch(QString type)
 {
     if (loading) return;
     QList<QString> types = {
+        "clearMaterialComplete",
         "setMaterialComplete",
         "sponsorMaterialComplete",
         "sponsorCertSend",
-        "setMaterialRemark"
+        "setMaterialRemark",
+        "setTeachMaterial"
     };
     if (types.indexOf(type) == -1) {
         return showError("未知的资料收齐类型！");
@@ -652,7 +685,7 @@ void InformationList::materialProcessBatch(QString type)
             if (json["code"].toInt() != 0) {
                 return showError(json["msg"].toString());
             }
-            if (type == "setMaterialComplete" || type == "setMaterialRemark") {
+            if (type == "setMaterialComplete" || type == "setMaterialRemark" or type == "setTeachMaterial") {
                 // 设置资料字段为已收齐，重新加载页面 or 将当前行的几个资料字段设置为已收齐
                 loadStudentData();
             }
@@ -766,4 +799,12 @@ void InformationList::on_cbx_lecturer_currentTextChanged(const QString &arg1)
     if (arg1 == "选择授课老师") {
         lecturer_name = "";
     }
+}
+
+void InformationList::on_resetFilterBtn_clicked()
+{
+    ui->cbx_clazz->setCurrentIndex(0);
+    ui->cbx_recruiter->setCurrentIndex(0);
+    ui->cbx_lecturer->setCurrentIndex(0);
+    loadStudentData();
 }

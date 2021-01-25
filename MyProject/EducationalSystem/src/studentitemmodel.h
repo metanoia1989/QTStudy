@@ -16,10 +16,13 @@ public:
 
     void setDisableColumns(QList<int> indexs);
     void setMaterialColumns(QList<int> indexs);
+    void setSensitiveColumns(QList<int> indexs);
     void setMaterialCompleteColumn(int column);
     QList<int> getMaterialColumns();
     int getMaterialCompleteColumn();
 
+public slots:
+    void processSensitiveData(bool checked);
 
 protected:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
@@ -27,8 +30,10 @@ protected:
 private:
     QList<int> disableColumns;
     QList<int> materialColumns;
+    QList<int> sensitiveColumns; // 敏感数据字段
     int materialCompleteColumn; // 资料收齐字段
     QMessageBox *msgBox;
+
 
 };
 

@@ -66,6 +66,8 @@ private slots:
 
     void on_cbx_lecturer_currentTextChanged(const QString &arg1);
 
+    void on_resetFilterBtn_clicked();
+
 signals:
     void filterDataLoaded(DataType type, QStringList data);
     void requestShowError(QString msg);
@@ -93,5 +95,7 @@ private:
 
     QString remark = ""; // 资料收齐备注
     int selectedId = 0; // 被选择的学员ID
+    QString selectedValue = 0; // 选择项的值
 };
+
 #endif // MAINWINDOW_H

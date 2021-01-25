@@ -7,5 +7,6 @@
         <file>icons/refresh.png</file>
         <file>icons/logout.png</file>
         <file>icons/batch.png</file>
+        <file>icons/reset.png</file>
     </qresource>
 </RCC>

@@ -36,6 +36,12 @@ void StudentItemModel::setMaterialColumns(QList<int> indexs)
     materialColumns = indexs;
 }
 
+// 设置敏感资料字段
+void StudentItemModel::setSensitiveColumns(QList<int> indexs)
+{
+    sensitiveColumns = indexs;
+}
+
 void StudentItemModel::setMaterialCompleteColumn(int column)
 {
     materialCompleteColumn = column;
@@ -49,6 +55,24 @@ QList<int> StudentItemModel::getMaterialColumns()
 int StudentItemModel::getMaterialCompleteColumn()
 {
     return materialCompleteColumn;
+}
+
+// 处理敏感数据
+void StudentItemModel::processSensitiveData(bool checked)
+{
+    if (sensitiveColumns.count() == 0) return;
+
+    for(int i = 0; i < rowCount(); i++) {
+        for(int j = 0; j < sensitiveColumns.count(); j++) {
+            int column = sensitiveColumns.at(j);
+            auto mItem = item(i, column);
+            QString value = mItem->data(Qt::UserRole + 3).toString();
+            if (checked) { // 星号处理
+                value = value.left(3) + value.mid(3, value.length() - 7).fill('*') +  value.right(4);
+            }
+            mItem->setData(value, Qt::DisplayRole);
+        }
+    }
 }
 
 bool StudentItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
