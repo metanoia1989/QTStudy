@@ -1,6 +1,6 @@
 QT       += core gui
 
-TARGET = 微信多开器
+TARGET = WechatDuplicate
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,9 +20,13 @@ HEADERS += \
 FORMS += \
     widget.ui
 
+RESOURCES += \
+    resource.qrc
+
+RC_FILE = app_win32.rc
+
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-RC_FILE = ../assets/app_win32.rc

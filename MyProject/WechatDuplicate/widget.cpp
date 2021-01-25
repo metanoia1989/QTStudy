@@ -9,6 +9,13 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
+
+    settings.setDefaultFormat(QSettings::NativeFormat);
+
+    QString executePath = settings.value("executePath").toString();
+    int executeNum = settings.value("executeNum").toInt();
+    ui->edit_execute_path->setText(executePath);
+    ui->spin_execute_num->setValue(executeNum);
 }
 
 Widget::~Widget()
@@ -23,6 +30,7 @@ void Widget::on_pushButton_clicked()
     QString executePath = QFileDialog::getOpenFileName();
     if (!executePath.isEmpty()) {
         ui->edit_execute_path->setText(executePath);
+        settings.setValue("executePath", executePath);
     }
 }
 
@@ -61,4 +69,9 @@ void Widget::showError(const QString& msg)
     msgBox->setText(msg);
     msgBox->exec();
     ui->btn_start->setEnabled(true);
+}
+
+void Widget::on_spin_execute_num_valueChanged(int arg1)
+{
+    settings.setValue("executeNum", arg1);
 }
