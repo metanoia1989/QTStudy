@@ -7,6 +7,7 @@
 #include "delegate/datedelegate.h"
 #include "delegate/paperphotodelegate.h"
 #include "delegate/techmaterialdelegate.h"
+#include "modifymaterialdialog.h"
 
 #include "utils/global.h"
 #include "utils/cache.h"
@@ -163,8 +164,10 @@ void InformationList::initTableView()
     QAction *collectionBatAct = new QAction("批量设置资料字段已收齐");
     QAction *remarkBatAct = new QAction("批量更新资料收齐备注");
     QAction *teachMaterialBatAct = new QAction("批量设置教材已寄");
+    QAction *modifyMaterialBatAct = new QAction("批量更新资料字段");
 
-    batchMenu->addActions({ certBatAct, collectionBatAct, remarkBatAct, teachMaterialBatAct });
+    batchMenu->addActions({ certBatAct, collectionBatAct,
+            remarkBatAct, teachMaterialBatAct, modifyMaterialBatAct });
     ui->batchBtn->setMenu(batchMenu);
     connect(certBatAct, &QAction::triggered, [this](){
         materialProcessBatch("sponsorCertSend");
@@ -187,6 +190,17 @@ void InformationList::initTableView()
         int result = QMessageBox::information(this, "确认提示", "确认教材已寄吗？", tr("确认"), tr("取消"));
         if (result == tr("确定").toInt()) {
             materialProcessBatch("setTeachMaterial");
+        }
+    });
+    // 批量更新资料字段
+    ModifyMaterialDialog *modifyDialog = new ModifyMaterialDialog(this);
+    connect(modifyMaterialBatAct, &QAction::triggered, [this, modifyDialog](){
+        modifyDialog->clearChecked();
+        if (modifyDialog->exec()) {
+            materialFields = modifyDialog->getResults();
+            if (materialFields.size() != 0) {
+                materialProcessBatch("modifyMaterialValues");
+            }
         }
     });
 
@@ -380,7 +394,7 @@ void InformationList::loadStudentData()
         .header("authorization", QString("Bearer %1").arg(token))
         .queryParam("page_size",per_page)
         .queryParam("page_num", curr_page)
-        .queryParam("keyword", keyword)
+        .queryParam("keyword", QUrl::toPercentEncoding(keyword))
         .queryParam("clazz_name", clazz_name)
         .queryParam("recruiter_name", recruiter_name)
         .queryParam("lecturer_name", lecturer_name)
@@ -645,7 +659,8 @@ void InformationList::materialProcessBatch(QString type)
         "sponsorMaterialComplete",
         "sponsorCertSend",
         "setMaterialRemark",
-        "setTeachMaterial"
+        "setTeachMaterial",
+        "modifyMaterialValues"
     };
     if (types.indexOf(type) == -1) {
         return showError("未知的资料收齐类型！");
@@ -670,6 +685,11 @@ void InformationList::materialProcessBatch(QString type)
     if (type == "setMaterialRemark") {
         data.insert("remark", remark);
     }
+    if (type == "modifyMaterialValues") {
+        for(const auto &field : materialFields.keys()) {
+            data.insert(field, materialFields[field]);
+        }
+    }
 
     httpClient->post(url)
         .header("content-type", "application/json")
@@ -685,7 +705,13 @@ void InformationList::materialProcessBatch(QString type)
             if (json["code"].toInt() != 0) {
                 return showError(json["msg"].toString());
             }
-            if (type == "setMaterialComplete" || type == "setMaterialRemark" or type == "setTeachMaterial") {
+            QList<QString> updateTypes = {
+                "setMaterialComplete",
+                "setMaterialRemark",
+                "setTeachMaterial",
+                "modifyMaterialValues",
+            };
+            if (updateTypes.indexOf(type) != -1) {
                 // 设置资料字段为已收齐，重新加载页面 or 将当前行的几个资料字段设置为已收齐
                 loadStudentData();
             }

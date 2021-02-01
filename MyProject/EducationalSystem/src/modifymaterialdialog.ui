@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ModifyMaterialDialog</class>
+ <widget class="QDialog" name="ModifyMaterialDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>305</width>
+    <height>277</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>批量更新资料收齐字段</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>教材是否寄出</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="radioTechNo">
+       <property name="text">
+        <string>否</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" colspan="2">
+      <widget class="QRadioButton" name="radioTechYes">
+       <property name="text">
+        <string>是</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>纸质版照片</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioPaperNo">
+       <property name="text">
+        <string>未收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QRadioButton" name="radioPaperYes">
+       <property name="text">
+        <string>已收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QRadioButton" name="radioPaperSubmit">
+       <property name="text">
+        <string>提前提交</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>电子照</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioPhotoNo">
+       <property name="text">
+        <string>未收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QRadioButton" name="radioPhotoYes">
+       <property name="text">
+        <string>已收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>学历扫描件</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioEducationNo">
+       <property name="text">
+        <string>未收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QRadioButton" name="radioEducationYes">
+       <property name="text">
+        <string>已收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>身份证扫描件</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioIdCardNo">
+       <property name="text">
+        <string>未收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QRadioButton" name="radioIdCardYes">
+       <property name="text">
+        <string>已收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>工作经历证明</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioWorkNo">
+       <property name="text">
+        <string>未收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QRadioButton" name="radioWorkYes">
+       <property name="text">
+        <string>已收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>社保证明</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioSocialNo">
+       <property name="text">
+        <string>未收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="QRadioButton" name="radioSocialYes">
+       <property name="text">
+        <string>已收齐</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>结业证</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1" colspan="2">
+      <widget class="QRadioButton" name="radioCertNo">
+       <property name="text">
+        <string>未制作</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="3">
+      <widget class="QRadioButton" name="radioCertYes">
+       <property name="text">
+        <string>已制作</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="4">
+      <widget class="QRadioButton" name="radioCertSend">
+       <property name="text">
+        <string>未寄出</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnConfirm">
+       <property name="text">
+        <string>确定</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel">
+       <property name="text">
+        <string>取消</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnConfirm</sender>
+   <signal>clicked()</signal>
+   <receiver>ModifyMaterialDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>138</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>ModifyMaterialDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>193</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>138</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

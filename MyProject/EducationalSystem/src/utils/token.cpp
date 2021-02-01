@@ -37,6 +37,7 @@ QString TokenPrivate::token()
 //    {
         QString url = getServerUrl() + "/api/desktop/auth/login";
         qDebug() << "请球URL：" << url;
+        m_bLastIsNetworkError = false; // 重置报错状态
         QEventLoop loop;
         QNetworkAccessManager mgr;
         QNetworkRequest request;

@@ -25,6 +25,7 @@ SOURCES += \
     logindialog.cpp \
     main.cpp \
     informationlist.cpp \
+    modifymaterialdialog.cpp \
     studentitemmodel.cpp \
     utils/global.cpp \
     utils/WizWin32Helper.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     delegate/techmaterialdelegate.h \
     logindialog.h \
     informationlist.h \
+    modifymaterialdialog.h \
     studentitemmodel.h \
     utils/global.h \
     utils/WizWin32Helper.h \
@@ -56,7 +58,8 @@ HEADERS += \
 
 FORMS += \
     logindialog.ui \
-    informationlist.ui
+    informationlist.ui \
+    modifymaterialdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -15,6 +15,7 @@ namespace AeaQt {
 };
 class StudentItemModel;
 class CheckboxHeader;
+class ModifyMaterialDialog;
 
 enum DataType {
     ClazzData,
@@ -96,6 +97,8 @@ private:
     QString remark = ""; // 资料收齐备注
     int selectedId = 0; // 被选择的学员ID
     QString selectedValue = 0; // 选择项的值
+
+    QMap<QString, int> materialFields; // 批量更新资料字段的结果值
 };
 
 #endif // MAINWINDOW_H
