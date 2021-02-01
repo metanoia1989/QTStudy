@@ -1,5 +1,7 @@
 QT       += core gui
 
+TARGET = WechatDuplicate
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -17,6 +19,12 @@ HEADERS += \
 
 FORMS += \
     widget.ui
+
+RESOURCES += \
+    resource.qrc
+
+RC_FILE = app_win32.rc
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

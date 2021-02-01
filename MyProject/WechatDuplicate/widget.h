@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QSettings>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -24,7 +25,11 @@ private slots:
     void on_btn_start_clicked();
 
 
+    void on_spin_execute_num_valueChanged(int arg1);
+
 private:
     Ui::Widget *ui;
+
+    QSettings settings;
 };
 #endif // WIDGET_H
