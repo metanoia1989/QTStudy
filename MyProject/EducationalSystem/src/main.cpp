@@ -3,8 +3,8 @@
 #include <QDebug>
 #include <QObject>
 #include <QThread>
-#include "informationlist.h"
 #include "logindialog.h"
+#include "mainwidget.h"
 #include "utils/WizWin32Helper.h"
 #include "utils/sqlite.h"
 #include "utils/cache.h"
@@ -19,6 +19,11 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
+
+    // 配置应用版本
+    app.setApplicationVersion(QString::number(APP_VERSION));
+    app.setApplicationName("安卓消防教务系统");
+    qDebug() << "当前程序的版本为：" << app.applicationVersion();
 
     // 配置字体
     QFont appFont = WizCreateWindowsUIFont(app);
@@ -66,7 +71,7 @@ int main(int argc, char *argv[])
         cache->setItem("token", strToken);
     }
     
-    InformationList w;
+    MainWidget w;
     w.show();
 
     return app.exec();

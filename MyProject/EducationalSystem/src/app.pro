@@ -7,6 +7,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
+VERSION = "1.2"
+DEFINES += APP_VERSION=$$VERSION
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -14,6 +17,7 @@ CONFIG += c++11
 TEMPLATE = app
 
 SOURCES += \
+    about.cpp \
     checkboxheader.cpp \
     components/SwitchButton.cpp \
     components/searchcombobox.cpp \
@@ -25,6 +29,7 @@ SOURCES += \
     logindialog.cpp \
     main.cpp \
     informationlist.cpp \
+    mainwidget.cpp \
     modifymaterialdialog.cpp \
     studentitemmodel.cpp \
     utils/global.cpp \
@@ -35,6 +40,7 @@ SOURCES += \
     utils/token.cpp
 
 HEADERS += \
+    about.h \
     checkboxheader.h \
     components/SwitchButton.h \
     components/searchcombobox.h \
@@ -45,6 +51,7 @@ HEADERS += \
     delegate/techmaterialdelegate.h \
     logindialog.h \
     informationlist.h \
+    mainwidget.h \
     modifymaterialdialog.h \
     studentitemmodel.h \
     utils/global.h \
@@ -57,8 +64,10 @@ HEADERS += \
     utils/token.h
 
 FORMS += \
+    about.ui \
     logindialog.ui \
     informationlist.ui \
+    mainwidget.ui \
     modifymaterialdialog.ui
 
 # Default rules for deployment.
@@ -82,3 +91,4 @@ INSTALLS += inis
 
 DEFINES += QT_APP_DEBUG
 include(../third-party/QtNetworkService/QtNetworkService.pri)
+include(../third-party/QSimpleUpdater/QSimpleUpdater.pri)

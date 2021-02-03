@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWidget</class>
+ <widget class="QWidget" name="MainWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>624</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>安卓教务系统</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/*去掉item虚线边框*/
+QListWidget, QListView, QTreeWidget, QTreeView {
+    outline: 0px;
+}
+/*设置左侧选项的最小最大宽度,文字颜色和背景颜色*/
+QListWidget {
+    min-width: 150px;
+    max-width: 150px;
+}
+/*被选中时的背景颜色和左边框颜色*/
+QListWidget::item:selected {
+	color: black;
+    border-left: 2px solid rgb(9, 187, 7);
+}
+/* 每项高度 */
+QListWidget::item {
+	min-height: 30px;
+	font-size: 22px;
+}</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>154</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>154</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="currentRow">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>学员资料列表</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../assets/resource.qrc">
+        <normaloff>:/icons/student.png</normaloff>:/icons/student.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>结业证寄送审核</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../assets/resource.qrc">
+        <normaloff>:/icons/certificate.png</normaloff>:/icons/certificate.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>关于程序</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../assets/resource.qrc">
+        <normaloff>:/icons/about.png</normaloff>:/icons/about.png</iconset>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="InformationList" name="widget"/>
+     <widget class="QWidget" name="approvalPage"/>
+     <widget class="About" name="aboutPage"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>InformationList</class>
+   <extends>QWidget</extends>
+   <header>informationlist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>About</class>
+   <extends>QWidget</extends>
+   <header>about.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../assets/resource.qrc"/>
+ </resources>
+ <connections/>
+</ui>

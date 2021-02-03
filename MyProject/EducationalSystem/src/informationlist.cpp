@@ -13,6 +13,7 @@
 #include "utils/cache.h"
 #include "utils/threads.h"
 #include "HttpClient.h"
+#include <QSimpleUpdater.h>
 
 #include <QMessageBox>
 #include <QDebug>
@@ -49,6 +50,9 @@ InformationList::InformationList(QWidget *parent)
 
     QTimer::singleShot(0, this, &InformationList::loadStudentData);
     loadFilterData();
+
+    // 检测应用更新
+    QTimer::singleShot(3000, this, &InformationList::checkAppUpdate);
 }
 
 InformationList::~InformationList()
@@ -305,6 +309,17 @@ void InformationList::loadFilterData()
     });
     connect(this, &InformationList::filterDataLoaded, this, &InformationList::showFilterData, Qt::QueuedConnection);
     connect(this, &InformationList::requestShowError, this, &InformationList::showError, Qt::QueuedConnection);
+}
+
+/**
+ * @brief 检测应用升级
+ */
+void InformationList::checkAppUpdate()
+{
+    qDebug() << "检测应用升级更新";
+    m_updater = QSimpleUpdater::getInstance();
+    QString DEFS_URL = "http://azxfpx.com/educational_app/updates.json";
+    m_updater->checkForUpdates(DEFS_URL);
 }
 
 /**

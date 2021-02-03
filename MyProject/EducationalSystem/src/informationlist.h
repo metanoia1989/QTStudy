@@ -16,6 +16,7 @@ namespace AeaQt {
 class StudentItemModel;
 class CheckboxHeader;
 class ModifyMaterialDialog;
+class QSimpleUpdater;
 
 enum DataType {
     ClazzData,
@@ -38,6 +39,7 @@ public:
     void initTableView();
     void updateUIStatus();
     void loadFilterData();
+    void checkAppUpdate();
 
 public slots:
     void showError(QString msg);
@@ -99,6 +101,7 @@ private:
     QString selectedValue = 0; // 选择项的值
 
     QMap<QString, int> materialFields; // 批量更新资料字段的结果值
+    QSimpleUpdater *m_updater;
 };
 
 #endif // MAINWINDOW_H
