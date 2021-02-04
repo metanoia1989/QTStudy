@@ -1,0 +1,8 @@
+Lib/
+Scripts/
+pyvenv.cfg
+dist/
+build/
+
+*.spec
+download/

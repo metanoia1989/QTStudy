@@ -26,24 +26,34 @@ class WebCopy(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 类的属性
+        self.copyUrl = ""
+        self.savePath = ""
+
         self.process = QProcess()
-        self.process.setReadChannel(QProcess.StandardOutput)
+        self.process.setProcessChannelMode(QProcess.MergedChannels)
 
         # 连接信号
         self.ui.browserDirBtn.clicked.connect(self.browserDir)
         self.ui.startBtn.clicked.connect(self.startCopy)
-        self.process.readyReadStandardOutput.connect(self.appendInfo)
+        self.ui.inputUrl.textChanged.connect(self.assignCopyUrl)
+        self.ui.dirInput.textChanged.connect(self.assignSavePath)
 
-        # 类的属性
-        self.copyUrl = ""
-        self.savePath = ""
+        self.process.started.connect(lambda : self.appendInfo("========页面克隆开始========\n"))
+        self.process.finished.connect(lambda : self.appendInfo("\n========页面克隆结束！=========="))
+        self.process.readyReadStandardOutput.connect(self.readProcessOutput)
+
+    def assignCopyUrl(self, text):
+        self.copyUrl = text
+
+    def assignSavePath(self, text):
+        self.savePath = text
         
     def browserDir(self):
         """
         浏览目录
         """
-        self.savePath = QFileDailog.getExistingDirectory()
-        
+        self.ui.dirInput.setText(QFileDialog.getExistingDirectory()) 
     
     def startCopy(self):
         """
@@ -75,9 +85,13 @@ class WebCopy(QWidget):
         msgBox.setText(msg)
         msgBox.exec_()
         
-    def appendInfo(self):
-        output = self.process.readAllStandardOutput()
-        self.ui.outputBoard.appendPlainText(output)
+    def readProcessOutput(self):
+        output = str(self.process.readAll(), "utf-8") 
+        self.appendInfo(output)
+        
+    def appendInfo(self, text):
+        self.ui.outputBoard.appendPlainText(text)
+
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)
