@@ -18,6 +18,8 @@ TEMPLATE = app
 
 SOURCES += \
     about.cpp \
+    approvaldialog.cpp \
+    certapproval.cpp \
     checkboxheader.cpp \
     components/SwitchButton.cpp \
     components/searchcombobox.cpp \
@@ -41,6 +43,8 @@ SOURCES += \
 
 HEADERS += \
     about.h \
+    approvaldialog.h \
+    certapproval.h \
     checkboxheader.h \
     components/SwitchButton.h \
     components/searchcombobox.h \
@@ -65,6 +69,8 @@ HEADERS += \
 
 FORMS += \
     about.ui \
+    approvaldialog.ui \
+    certapproval.ui \
     logindialog.ui \
     informationlist.ui \
     mainwidget.ui \

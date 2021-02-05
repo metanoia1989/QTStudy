@@ -105,7 +105,7 @@ QListWidget::item {
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="InformationList" name="widget"/>
-     <widget class="QWidget" name="approvalPage"/>
+     <widget class="CertApproval" name="approvalPage"/>
      <widget class="About" name="aboutPage"/>
     </widget>
    </item>
@@ -122,6 +122,12 @@ QListWidget::item {
    <class>About</class>
    <extends>QWidget</extends>
    <header>about.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CertApproval</class>
+   <extends>QWidget</extends>
+   <header>certapproval.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
