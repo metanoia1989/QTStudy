@@ -1,10 +1,11 @@
 #include "certificatedelegate.h"
 #include <QComboBox>
 #include <QStandardItemModel>
+#include <QPainter>
 
 
 CertificateDelegate::CertificateDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : InhertStyleDelegate(parent)
 {
 
 }

@@ -26,6 +26,7 @@ SOURCES += \
     delegate/certificatedelegate.cpp \
     delegate/collectiondelegate.cpp \
     delegate/datedelegate.cpp \
+    delegate/inhertstyledelegate.cpp \
     delegate/paperphotodelegate.cpp \
     delegate/techmaterialdelegate.cpp \
     logindialog.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     delegate/certificatedelegate.h \
     delegate/collectiondelegate.h \
     delegate/datedelegate.h \
+    delegate/inhertstyledelegate.h \
     delegate/paperphotodelegate.h \
     delegate/techmaterialdelegate.h \
     logindialog.h \

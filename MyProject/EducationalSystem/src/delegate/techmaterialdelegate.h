@@ -1,9 +1,9 @@
 #ifndef TECHMATERIALDELEGATE_H
 #define TECHMATERIALDELEGATE_H
 
-#include <QItemDelegate>
+#include "inhertstyledelegate.h"
 
-class TechMaterialDelegate : public QItemDelegate
+class TechMaterialDelegate : public InhertStyleDelegate
 {
     Q_OBJECT
 public:
@@ -16,6 +16,7 @@ public:
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
     // 给编辑空间位置的大小
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
 };
 
 #endif // TECHMATERIALDELEGATE_H

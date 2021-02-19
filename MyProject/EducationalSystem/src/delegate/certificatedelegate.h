@@ -1,9 +1,9 @@
 #ifndef CERTIFICATEDELEGATE_H
 #define CERTIFICATEDELEGATE_H
 
-#include <QItemDelegate>
+#include "inhertstyledelegate.h"
 
-class CertificateDelegate : public QItemDelegate
+class CertificateDelegate : public InhertStyleDelegate
 {
     Q_OBJECT
 public:

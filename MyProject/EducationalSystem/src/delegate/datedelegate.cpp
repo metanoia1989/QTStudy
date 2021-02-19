@@ -4,7 +4,7 @@
 
 
 DateDelegate::DateDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : InhertStyleDelegate(parent)
 {
 
 }

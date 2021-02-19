@@ -4,7 +4,7 @@
 
 
 PaperPhotoDelegate::PaperPhotoDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : InhertStyleDelegate(parent)
 {
 
 }

@@ -1,9 +1,9 @@
 #ifndef DATEDELEGATE_H
 #define DATEDELEGATE_H
 
-#include <QItemDelegate>
+#include "inhertstyledelegate.h"
 
-class DateDelegate : public QItemDelegate
+class DateDelegate : public InhertStyleDelegate
 {
     Q_OBJECT
 public:

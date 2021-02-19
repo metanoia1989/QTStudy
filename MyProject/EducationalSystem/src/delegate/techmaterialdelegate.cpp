@@ -1,10 +1,11 @@
 #include "techmaterialdelegate.h"
 #include <QComboBox>
 #include <QStandardItemModel>
+#include <QPainter>
 
 
 TechMaterialDelegate::TechMaterialDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : InhertStyleDelegate(parent)
 {
 
 }

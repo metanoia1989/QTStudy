@@ -91,7 +91,12 @@ void InformationList::initTableView()
     ui->studentsDataTable->setModel(model);
     ui->studentsDataTable->setAlternatingRowColors(true);
     ui->studentsDataTable->setStyleSheet("QTableView{background-color: #fff;"
-    "alternate-background-color: #f3f3f3;}");
+                                         "alternate-background-color: #f3f3f3;}"
+                                         "QTableView::item:selected{ background-color: #ffc300; "
+                                         "color: #000; }"
+                                         "");
+    // 设置行选择模式
+    ui->studentsDataTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     // 设置教材是否寄出 第11列
     ui->studentsDataTable->setItemDelegateForColumn(11, new TechMaterialDelegate(this));

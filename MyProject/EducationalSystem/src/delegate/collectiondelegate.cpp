@@ -1,10 +1,11 @@
 #include "collectiondelegate.h"
 #include <QComboBox>
 #include <QStandardItemModel>
+#include <QPainter>
 
 
 CollectionDelegate::CollectionDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : InhertStyleDelegate(parent)
 {
 
 }
