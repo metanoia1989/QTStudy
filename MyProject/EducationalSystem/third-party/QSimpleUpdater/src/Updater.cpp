@@ -412,6 +412,8 @@ void Updater::onReply(QNetworkReply *reply)
    if (platform.contains("mandatory-update"))
       m_mandatoryUpdate = platform.value("mandatory-update").toBool();
 
+   qDebug() << QString("版本更新检查结果：latestVersion: %1, moduleVersion: %2")
+            .arg(latestVersion()).arg(moduleVersion());
    /* Compare latest and current version */
    setUpdateAvailable(compare(latestVersion(), moduleVersion()));
    emit checkingFinished(url());

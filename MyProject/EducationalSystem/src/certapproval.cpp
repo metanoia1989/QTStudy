@@ -40,12 +40,13 @@ CertApproval::CertApproval(QWidget *parent)
     , loading(false)
 {
     ui->setupUi(this);
-     initTableView();
 
      httpClient = new AeaQt::HttpClient;
 
      // 读取服务器地址
      readSettings();
+
+     initTableView(); // =_= 这里面有网络请求操作，我给忘了，之前竟然放到了前面
 
      QTimer::singleShot(0, this, &CertApproval::loadApprovalData);
      loadFilterData();
@@ -80,6 +81,7 @@ void CertApproval::initTableView()
     ui->studentsDataTable->setAlternatingRowColors(true);
     ui->studentsDataTable->setStyleSheet("QTableView{background-color: #fff;"
     "alternate-background-color: #f3f3f3;}");
+    ui->studentsDataTable->verticalHeader()->hide();
 
 
     QFont font = QFont("微软雅黑", 12);
@@ -100,47 +102,8 @@ void CertApproval::initTableView()
         }
     });
 
-    // 设置右键菜单
-    menu = new QMenu(ui->studentsDataTable);
-//    QAction *editAction = new QAction("编辑");
-//    QAction *deleteAction = new QAction("删除");
-    QAction *approvalAction = new QAction("审批");
-    menu->addActions({ approvalAction });
-
-    ui->studentsDataTable->setContextMenuPolicy(Qt::CustomContextMenu);
-
-    ApprovalDialog *approvalDialog = new ApprovalDialog(this);
-
-    connect(approvalAction, &QAction::triggered, [this, approvalDialog](){
-        // 审批处理
-        approvalDialog->clearChecked();
-        if (approvalDialog->exec()) {
-            approval_status = approvalDialog->getResult();
-            if (approval_status != -1) {
-                approvalProcessRequest();
-            }
-        }
-    });
-    connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
-                this, &CertApproval::ProvideContextMenu);
-
-    // 设置批处理的右键菜单
-    batchMenu = new QMenu(this);
-//    QAction *deleteBatAct = new QAction("批量删除");
-    QAction *approvalBatAct = new QAction("批量审批");
-
-    batchMenu->addActions({ approvalBatAct });
-    ui->batchBtn->setMenu(batchMenu);
-    connect(approvalBatAct, &QAction::triggered, [this, approvalDialog](){
-        // 批量审批处理
-        approvalDialog->clearChecked();
-        if (approvalDialog->exec()) {
-            approval_status = approvalDialog->getResult();
-            if (approval_status != -1) {
-                approvalProcessBatch();
-            }
-        }
-    });
+    // 检测是否有审批权限
+    checkApprovalAuthority();
 }
 
 /**
@@ -185,6 +148,8 @@ void CertApproval::loadFilterData()
             QString filter_data_url = getServerUrl() + "/api/desktop/%1";
             if (type == CertDataType::ClazzDataCert) {
                 filter_data_url = filter_data_url.arg("clazz");
+            } else if (type == CertDataType::AssistantDataCert) {
+                filter_data_url = filter_data_url.arg("assistant");
             } else {
                 emit m_p->requestShowError("无效的筛选类型");
                 return;
@@ -225,6 +190,10 @@ void CertApproval::loadFilterData()
         GetTokenRunnable runnable(this, token);
         runnable.run(CertDataType::ClazzDataCert);
     });
+    ExecuteOnThread(THREAD_NETWORK, [=](){
+        GetTokenRunnable runnable(this, token);
+        runnable.run(CertDataType::AssistantDataCert);
+    });
     connect(this, &CertApproval::filterDataLoaded, this, &CertApproval::showFilterData, Qt::QueuedConnection);
     connect(this, &CertApproval::requestShowError, this, &CertApproval::showError, Qt::QueuedConnection);
 }
@@ -257,6 +226,10 @@ void CertApproval::showFilterData(CertDataType type, QStringList data)
         ui->cbx_clazz->clear();
         ui->cbx_clazz->addItem("选择班次");
         ui->cbx_clazz->addItems(data);
+    } else if (type == CertDataType::AssistantDataCert) {
+        ui->cbx_proposer->clear();
+        ui->cbx_proposer->addItem("选择申请人");
+        ui->cbx_proposer->addItems(data);
     }
 }
 
@@ -399,7 +372,7 @@ void CertApproval::ProvideContextMenu(const QPoint& position)
  * @brief 资料收齐申请相关处理
  * @param type
  */
-void CertApproval::approvalProcessRequest()
+void CertApproval::approvalProcessRequest(QString type)
 {
     if (loading) return;
 
@@ -407,8 +380,14 @@ void CertApproval::approvalProcessRequest()
         return showError("无效的学员ID！");
     }
 
+    qDebug() << "type的类型为：" << type;
     loading = true;
     QString url = server_url + "/api/desktop/approval/batUpdate";
+    if (type.compare("restore") == 0) {
+        url = server_url + "/api/desktop/approval/restore";
+    } else {
+        qDebug() << "type is restore ? " << type.compare("restore") << " " << (type.compare("restore") == 0);
+    }
     QString token = Global::cache()->getItem("token");
     qDebug() << "发起请求：" << url.arg(selectedId);
     QVariantMap data;
@@ -488,6 +467,93 @@ void CertApproval::approvalProcessBatch()
         })
         .timeout(10 * 1000) // 10s超时
             .exec();
+}
+
+/**
+ * @brief 检测结业证审批权限
+ */
+void CertApproval::checkApprovalAuthority()
+{
+    loading = true;
+    QString url = server_url + "/api/desktop/approval/authority";
+    QString token = Global::cache()->getItem("token");
+
+    httpClient->get(url)
+        .header("content-type", "application/json")
+        .header("authorization", QString("Bearer %1").arg(token))
+        .onResponse(this, SLOT(makeApprovalMenu(QByteArray)))
+        .onError([this](QString errorStr){
+            loading = false;
+            showError(errorStr);
+        })
+        .timeout(10 * 1000) // 10s超时
+            .exec();
+}
+
+void CertApproval::makeApprovalMenu(QByteArray result)
+{
+    loading = false;
+    QJsonObject json = QJsonDocument::fromJson(result).object();
+    if (json.isEmpty()) {
+        return showError("服务器响应为空！");
+    }
+    if (json["code"].toInt() != 0) {
+        return showError(json["msg"].toString());
+    }
+
+    qDebug() << "获取权限成功！！！";
+
+    QJsonObject data = json["data"].toObject();
+    bool edit = data["edit"].toBool();
+
+    if (!edit) {
+        return;
+    }
+    // 设置右键菜单
+    menu = new QMenu(ui->studentsDataTable);
+    QAction *approvalAction = new QAction("审批");
+    QAction *restoreAction = new QAction("撤销");
+    menu->addActions({ approvalAction, restoreAction });
+
+    ui->studentsDataTable->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    ApprovalDialog *approvalDialog = new ApprovalDialog(this);
+
+    connect(approvalAction, &QAction::triggered, [this, approvalDialog](){
+        // 审批处理
+        approvalDialog->clearChecked();
+        if (approvalDialog->exec()) {
+            approval_status = approvalDialog->getResult();
+            if (approval_status != -1) {
+                approvalProcessRequest();
+            }
+        }
+    });
+    connect(restoreAction, &QAction::triggered, [this](){
+        int result = QMessageBox::information(this, "确认提示", "确认要撤销审批操作吗？", tr("确认"), tr("取消"));
+        if (result == tr("确定").toInt()) {
+            approvalProcessRequest("restore");
+        }
+    });
+    connect(ui->studentsDataTable, &QTableView::customContextMenuRequested,
+                this, &CertApproval::ProvideContextMenu);
+
+    // 设置批处理的右键菜单
+    batchMenu = new QMenu(this);
+    QAction *approvalBatAct = new QAction("批量审批");
+
+    batchMenu->addActions({ approvalBatAct });
+    ui->batchBtn->setMenu(batchMenu);
+    connect(approvalBatAct, &QAction::triggered, [this, approvalDialog](){
+        // 批量审批处理
+        approvalDialog->clearChecked();
+        if (approvalDialog->exec()) {
+            approval_status = approvalDialog->getResult();
+            if (approval_status != -1) {
+                approvalProcessBatch();
+            }
+        }
+    });
 }
 
 

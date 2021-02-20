@@ -97,6 +97,7 @@ void InformationList::initTableView()
                                          "");
     // 设置行选择模式
     ui->studentsDataTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->studentsDataTable->verticalHeader()->hide();
 
     // 设置教材是否寄出 第11列
     ui->studentsDataTable->setItemDelegateForColumn(11, new TechMaterialDelegate(this));

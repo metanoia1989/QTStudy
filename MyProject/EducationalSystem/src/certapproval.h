@@ -21,7 +21,8 @@ class QSimpleUpdater;
 enum CertDataType {
     ClazzDataCert,
     LecturerDataCert,
-    RecruiterDataCert
+    RecruiterDataCert,
+    AssistantDataCert
 };
 
 Q_DECLARE_METATYPE(CertDataType)
@@ -46,8 +47,11 @@ public slots:
     void showApprovalData(QByteArray data);
     void showFilterData(CertDataType type, QStringList data);
     void ProvideContextMenu(const QPoint& position);
-    void approvalProcessRequest();
+    void approvalProcessRequest(QString type = "approval");
     void approvalProcessBatch();
+
+protected:
+    void checkApprovalAuthority();
 
 private slots:
     void on_refreshBtn_clicked();
@@ -65,6 +69,8 @@ private slots:
     void on_cbx_clazz_currentTextChanged(const QString &arg1);
 
     void on_resetFilterBtn_clicked();
+
+    void makeApprovalMenu(QByteArray);
 
 signals:
     void filterDataLoaded(CertDataType type, QStringList data);

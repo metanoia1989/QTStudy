@@ -36,7 +36,7 @@ MainWidget::~MainWidget()
  */
 void MainWidget::checkAppUpdate()
 {
-    qDebug() << "检测应用升级更新";
+    qDebug() << "检测应用升级更新，当前程序版本：" << qApp->applicationVersion();
     m_updater = QSimpleUpdater::getInstance();
     QString DEFS_URL = "http://azxfpx.com/educational_app/updates.json";
     m_updater->checkForUpdates(DEFS_URL);

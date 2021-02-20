@@ -11,6 +11,10 @@
 #include "utils/global.h"
 #include "utils/token.h"
 
+//************** APP版本号 *****************
+//#define APP_VERSION 1.4
+//*****************************************
+
 int main(int argc, char *argv[])
 {
     // 仅Windows平台可以使用
