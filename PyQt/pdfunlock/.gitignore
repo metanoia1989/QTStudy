@@ -1,0 +1,17 @@
+Lib/
+Scripts/
+pyvenv.cfg
+dist/
+build/
+
+*.spec
+download/
+
+!bin/*
+
+pdf/
+
+*.pdf
+
+venv/
+__pycache__/

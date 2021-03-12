@@ -501,7 +501,7 @@ void CertApproval::makeApprovalMenu(QByteArray result)
         return showError(json["msg"].toString());
     }
 
-    qDebug() << "获取权限成功！！！";
+    qDebug() << "获取权限成功！！！" << result;
 
     QJsonObject data = json["data"].toObject();
     bool edit = data["edit"].toBool();

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PDFUnlockForm</class>
+ <widget class="QWidget" name="PDFUnlockForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PDF解锁小工具</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">* {
+	font-size: 12px;
+	font-family: 微软雅黑;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>PDF源目录</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="editSourceDir"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="btnSelectSource">
+       <property name="text">
+        <string>点击选择</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>PDF输出目录</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="editOutputDir"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="btnSelectOutput">
+       <property name="text">
+        <string>点击选择</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QPushButton" name="btnStartConvert">
+       <property name="text">
+        <string>开始转换</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="editOutput"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
