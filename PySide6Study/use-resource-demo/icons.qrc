@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>icons/play-button.png</file>
+        <file>icons/click.png</file>
+        <file>icons/monkey.png</file>
+        <file>icons/next.png</file>
+    </qresource>
+</RCC>
